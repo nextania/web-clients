@@ -69,7 +69,6 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
         let settings = state().get("settings");
         if (settings) {
             let mfa = twoFactor();
-            console.log(mfa, settings.mfaEnabled);
             if (mfa !== undefined && mfa !== settings.mfaEnabled) {
                 if (settings.mfaEnabled === false && mfa === true) {
                     // open setup dialog
@@ -127,7 +126,7 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
             try {
                 await client.createPasskey();
             } catch(e) {
-                console.log(e)
+                console.error(e);
                 window.location.reload();
             }
         }

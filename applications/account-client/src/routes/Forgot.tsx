@@ -1,14 +1,14 @@
-import { Accessor, createSignal, JSX, Match, onMount, Setter, Show } from "solid-js";
+import { Accessor, createMemo, createSignal, JSX, Match, onMount, Setter, Show } from "solid-js";
 import Fade from "../components/Fade";
 import { useTranslate } from "../utilities/i18n";
 import ErrorText from "../components/ErrorText";
 import { Button, Link, Input, Title } from "@nextania/ui";
 import { Switch as ConditionalSwitch } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { TRUSTED_SERVICES } from "../constants";
 import { calculateEntropy } from "../utilities/client";
 import { validateSession, finishResetPassword, forgotPassword, RequestError } from "@nextania/core-api";
 import { RenderableError, RenderableErrorType } from "../utilities/errors";
+import { useGlobalState } from "../context";
 
 type ForgotStage = "email" | "sent" | "credentials" | "done" | "skip";
 type InputError = "EMPTY_EMAIL" | "INVALID_EMAIL" | "EMPTY_PASSWORD" | "INVALID_CREDENTIALS" | "WEAK_PASSWORD";
@@ -26,6 +26,7 @@ const Forgot = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadin
     
     const navigate = useNavigate();
     const t = useTranslate();
+    const state = createMemo(() => useGlobalState());
 
     const forgot = async () => {
         setError();
@@ -83,10 +84,10 @@ const Forgot = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadin
 
     const continueToRegisteredService = async (token: string) => {        
         setTimeout(() => {
+            const trustedServices = state().get("serverConfig")?.trustedServices ?? [];
             const getContinueUrl = new URLSearchParams(window.location.search).get("continue");
-            const url = new URL(getContinueUrl ? getContinueUrl : TRUSTED_SERVICES[0]);
-            if (TRUSTED_SERVICES.some(x => x === url.origin + url.pathname)) {
-                console.log(token);
+            const url = new URL(getContinueUrl ? getContinueUrl : trustedServices[0]);
+            if (trustedServices.some(x => x === url.origin + url.pathname)) {
                 url.searchParams.set("token", token);
             }
             window.location.href = url.toString();
@@ -113,7 +114,6 @@ const Forgot = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadin
                 if (session) {
                     // however, need to handle this somehow
                     setStage("skip");
-                    console.log("skipping login", token);
                     await continueToRegisteredService(token);
                 }
             } catch {}

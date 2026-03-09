@@ -1,5 +1,5 @@
 import { Accessor, createContext, createSignal, ParentProps, Setter, useContext } from "solid-js";
-import { Client, CurrentUser } from "@nextania/core-api";
+import { Client, CurrentUser, ServerConfiguration } from "@nextania/core-api";
 import { Language } from "./utilities/i18n";
 
 const StateContext = createContext<GlobalState>();
@@ -19,6 +19,7 @@ interface GlobalStateKeyMap {
     session?: Client;
     settings?: CurrentUser;
     sessionData: SessionData;
+    serverConfig?: ServerConfiguration;
 }
 
 class GlobalState {

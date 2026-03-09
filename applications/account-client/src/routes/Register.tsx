@@ -2,7 +2,6 @@ import HCaptcha from "solid-hcaptcha";
 import { Button, Input, Title, Box, Link, OtpInput } from "@nextania/ui";
 import Fade from "../components/Fade";
 import ErrorText from "../components/ErrorText";
-import { CAPTCHA_KEY, TRUSTED_SERVICES } from "../constants";
 import { styled } from "solid-styled-components";
 import { useTranslate } from "../utilities/i18n";
 import { Accessor, createMemo, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
@@ -133,9 +132,10 @@ const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoad
 
     const continueToRegisteredService = async (token: string) => {        
         setTimeout(() => {
+            const trustedServices = state().get("serverConfig")?.trustedServices ?? [];
             const getContinueUrl = new URLSearchParams(window.location.search).get("continue");
-            const url = new URL(getContinueUrl ? getContinueUrl : TRUSTED_SERVICES[0]);
-            if (TRUSTED_SERVICES.some(x => x === url.origin + url.pathname)) {
+            const url = new URL(getContinueUrl ? getContinueUrl : trustedServices[0]);
+            if (trustedServices.some(x => x === url.origin + url.pathname)) {
                 url.searchParams.set("token", token);
             }
             window.location.href = url.toString();
@@ -155,9 +155,10 @@ const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoad
                 if (session) {
                     setStage("skip");
                     setTimeout(() => {
+                        const trustedServices = state().get("serverConfig")?.trustedServices ?? [];
                         const getContinueUrl = new URLSearchParams(window.location.search).get("continue");
-                        const url = new URL(getContinueUrl ? getContinueUrl : TRUSTED_SERVICES[0]);
-                        if (TRUSTED_SERVICES.some(x => x === url.origin + url.pathname)) {
+                        const url = new URL(getContinueUrl ? getContinueUrl : trustedServices[0]);
+                        if (trustedServices.some(x => x === url.origin + url.pathname)) {
                             url.searchParams.set("token", token as string);
                         }
                         window.location.href = url.toString();
@@ -209,7 +210,7 @@ const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoad
                                 <HCaptcha 
                                     languageOverride={state().get("sessionData").language}
                                     theme="light"
-                                    sitekey={CAPTCHA_KEY}
+                                    sitekey={state().get("serverConfig")?.captchaKey ?? ""}
                                     onVerify={setCaptchaToken}
                                     ref={captcha}
                                     onLoad={initCaptcha}

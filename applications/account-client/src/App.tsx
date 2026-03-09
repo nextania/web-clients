@@ -1,17 +1,24 @@
 import { Navigate, Route, Router } from "@solidjs/router";
 import FormBase from "./components/FormBase";
-import { createSignal } from "solid-js";
-import { Language } from "./utilities/i18n";
+import { createSignal, onMount } from "solid-js";
 import Login from "./routes/Login";
 import ManageAccount from "./routes/ManageAccount";
 import Register from "./routes/Register";
 import Authenticated from "./components/Authenticated";
-import { StateProvider } from "./context";
+import { StateProvider, state } from "./context";
 import Logout from "./routes/Logout";
 import Forgot from "./routes/Forgot";
+import { getServerConfiguration } from "@nextania/core-api";
 
 const App = () => {
   const [loading, setLoading] = createSignal(false);
+
+  onMount(async () => {
+    try {
+      const config = await getServerConfiguration();
+      state.set("serverConfig", config);
+    } catch {}
+  });
 
   return (
       <StateProvider>

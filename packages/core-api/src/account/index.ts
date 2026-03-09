@@ -1,4 +1,4 @@
-import { callEndpoint } from "./routes";
+import { ApiResponse, callEndpoint } from "./routes";
 import { Client } from "./manage";
 import { get } from "@github/webauthn-json";
 import { getBrowser } from "../../../../applications/account-client/src/utilities/client";
@@ -46,6 +46,11 @@ export const createSessionPasskey = async (existingSession?: string) => {
         }
     } catch {}
 };
+
+export const getServerConfiguration = (): Promise<ServerConfiguration> => {
+    return callEndpoint("service", undefined);
+};
+export type ServerConfiguration = ApiResponse<"service">;
 
 export * from "./errors";
 export * from "./manage";

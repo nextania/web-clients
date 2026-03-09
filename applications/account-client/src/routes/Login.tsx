@@ -5,7 +5,6 @@ import ErrorText from "../components/ErrorText";
 import { Button, Link, OtpInput, Input, Title, Toggle, ToggleContainer } from "@nextania/ui";
 import { Switch as Switch } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { TRUSTED_SERVICES } from "../constants";
 import { styled } from "solid-styled-components";
 import { createSession, PartialClient, validateSession, createSessionPasskey, RequestError } from "@nextania/core-api";
 import { useGlobalState } from "../context";
@@ -116,9 +115,10 @@ const Login = ({ loading, setLoading, escalate }: { loading: Accessor<boolean>; 
 
     const continueToRegisteredService = async (token: string) => {        
         setTimeout(() => {
+            const trustedServices = state().get("serverConfig")?.trustedServices ?? [];
             const getContinueUrl = new URLSearchParams(window.location.search).get("continue");
-            const url = new URL(getContinueUrl ? getContinueUrl : TRUSTED_SERVICES[0]);
-            if (TRUSTED_SERVICES.some(x => x === url.origin + url.pathname)) {
+            const url = new URL(getContinueUrl ? getContinueUrl : trustedServices[0]);
+            if (trustedServices.some(x => x === url.origin + url.pathname)) {
                 url.searchParams.set("token", token);
             }
             window.location.href = url.toString();

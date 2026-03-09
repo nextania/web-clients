@@ -361,6 +361,8 @@ const routes = {
                 version: string(),
                 cdnRoot: string(),
                 registrationDisabled: boolean(),
+                captchaKey: string(),
+                trustedServices: array(string()),
             })
         }
     }
