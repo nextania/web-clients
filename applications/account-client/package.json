@@ -1,0 +1,31 @@
+{
+  "name": "account-services-client",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@corvu/dialog": "^0.2.4",
+    "@corvu/otp-field": "^0.1.4",
+    "@corvu/popover": "^0.2.0",
+    "@nextania/core-api": "workspace:*",
+    "@nextania/ui": "workspace:*",
+    "@solid-primitives/i18n": "^2.2.1",
+    "@solidjs/router": "^0.15.4",
+    "jwt-decode": "^4.0.0",
+    "solid-hcaptcha": "^1.1.0",
+    "solid-icons": "^1.2.0",
+    "solid-js": "^1.9.11",
+    "solid-styled-components": "^0.28.5",
+    "ulid": "^3.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-solid": "^2.11.10"
+  }
+}

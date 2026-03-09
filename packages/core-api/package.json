@@ -1,0 +1,13 @@
+{
+  "name": "@nextania/core-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@github/webauthn-json": "^2.1.1",
+    "@serenity-kit/opaque": "^1.1.0",
+    "superstruct": "^2.0.2"
+  }
+}

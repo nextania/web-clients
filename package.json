@@ -1,0 +1,7 @@
+{
+  "name": "web-clients",
+  "workspaces": [
+    "applications/*",
+    "packages/*"
+  ]
+}
