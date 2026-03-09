@@ -1,6 +1,7 @@
 import { Navigate, Route, Router } from "@solidjs/router";
 import FormBase from "./components/FormBase";
 import { createSignal, onMount } from "solid-js";
+import { Language } from "./utilities/i18n";
 import Login from "./routes/Login";
 import ManageAccount from "./routes/ManageAccount";
 import Register from "./routes/Register";
@@ -17,7 +18,9 @@ const App = () => {
     try {
       const config = await getServerConfiguration();
       state.set("serverConfig", config);
-    } catch {}
+    } catch {
+      console.error("Failed to fetch server configuration");
+    }
   });
 
   return (

@@ -35,6 +35,7 @@
     "CONFIRM_PASSWORD": "確認密碼",
     "VERIFICATION": "驗證",
     "VERIFICATION_DESCRIPTION": "您是人類嗎？我們確信您是，但我們需要確認一下。",
+    "REGISTRATION_DISABLED": "此服務器當前禁用註冊。我們為此帶來的不便表示歉意。",
     "LOGGED_IN": "您已成功登錄。請稍候，您將被重定向到您的目的地。",
     "ALREADY_LOGGED_IN": "您已經登錄。請稍候，您將被重定向到您的目的地。",
     "MFA": "雙因素認證",

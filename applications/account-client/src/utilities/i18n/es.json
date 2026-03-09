@@ -35,6 +35,7 @@
     "CONFIRM_PASSWORD": "Confirmar contraseña",
     "VERIFICATION": "Verificación",
     "VERIFICATION_DESCRIPTION": "¿Es usted un humano? Estamos seguros de que lo es, pero necesitamos asegurarnos.",
+    "REGISTRATION_DISABLED": "El registro está actualmente deshabilitado en este servidor. Nos disculpamos por las molestias.",
     "LOGGED_IN": "Ha iniciado sesión correctamente. Espere mientras es redirigido a su destino.",
     "ALREADY_LOGGED_IN": "Ya ha iniciado sesión. Espere mientras es redirigido a su destino.",
     "MFA": "Autenticación de dos factores",

@@ -39,6 +39,7 @@ const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
     const [displayName, setDisplayName] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
     const t = useTranslate();
+    const cdnRoot = () => state().get("serverConfig")?.cdnRoot!;
     const handleAvatarChange = () => {
         const input = document.createElement("input");
         input.type = "file";
@@ -108,7 +109,7 @@ const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
             <Section>
                 <AvatarConfigurator>
                     <AvatarContainer onClick={handleAvatarChange}>
-                        <img src={`https://cdn.nextania.com/stores/avatars/files/1.png`} alt="avatar" />
+                        <img src={`${cdnRoot()}/assets/default.png`} alt="avatar" />
                     </AvatarContainer>
                     <Button>{t("REMOVE_AVATAR")}</Button>
                 </AvatarConfigurator>

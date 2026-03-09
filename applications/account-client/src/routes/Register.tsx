@@ -4,7 +4,7 @@ import Fade from "../components/Fade";
 import ErrorText from "../components/ErrorText";
 import { styled } from "solid-styled-components";
 import { useTranslate } from "../utilities/i18n";
-import { Accessor, createMemo, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
+import { Accessor, createEffect, createMemo, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
 import { useNavigate } from "@solidjs/router";
 import { calculateEntropy, getBrowser } from "../utilities/client";
 import { createAccount, RegistrationContinuation, RequestError, validateSession } from "@nextania/core-api";
@@ -17,7 +17,7 @@ const ButtonContainer = styled.div`
     }
 `;
 
-type RegisterStage = "credentials" | "verify" | "done" | "skip";
+type RegisterStage = "disabled" | "credentials" | "verify" | "done" | "skip";
 
 const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoading: Setter<boolean>; }) => {
     const [error, setError] = createSignal<RenderableErrorType>();
@@ -34,6 +34,12 @@ const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoad
     const [code, setCode] = createSignal("");
     const t = useTranslate();
     const state = createMemo(() => useGlobalState());
+
+    createEffect(() => {
+        if (state().get("serverConfig")?.registrationDisabled) {
+            setStage("disabled");
+        }
+    });
 
     let captcha: HCaptcha | undefined;
 
@@ -191,6 +197,15 @@ const Register = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoad
     return (
         <Show when={checked()} fallback={<div />}>
             <Switch fallback={<div />}>
+                <Match when={stage() === "disabled"}>
+                    <Fade hiding={hiding()}>
+                        <Title>{t("REGISTER")}</Title>
+                        <div>
+                            <p>{t("REGISTRATION_DISABLED")}</p>
+                        </div>
+                        <ErrorText />
+                    </Fade>
+                </Match>
                 <Match when={stage() === "credentials"}>
                     <Fade hiding={hiding()}>
                         <Title>{t("REGISTER")}</Title>

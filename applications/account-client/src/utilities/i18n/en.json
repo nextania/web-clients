@@ -35,6 +35,7 @@
     "CONFIRM_PASSWORD": "Confirm password",
     "VERIFICATION": "Verification",
     "VERIFICATION_DESCRIPTION": "Are you a human? We're sure you are, but we need to make sure.",
+    "REGISTRATION_DISABLED": "Registration is currently disabled on this server. We apologize for the inconvenience.",
     "LOGGED_IN": "You have logged in successfully. Please wait while you are redirected to your destination.",
     "ALREADY_LOGGED_IN": "You are already logged in. Please wait while you are redirected to your destination.",
     "MFA": "Two-factor authentication",

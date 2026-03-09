@@ -1,7 +1,7 @@
-export const upload = async (file: File, path: string): Promise<string> => {
+export const upload = async (base: string, file: File, path: string): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await fetch(`https://cdn.nextania.com/stores/${path}`, {
+    const response = await fetch(`${base}/stores/${path}`, {
         method: "POST",
         body: formData
     });
@@ -9,6 +9,6 @@ export const upload = async (file: File, path: string): Promise<string> => {
     return json.url;
 }
 
-export const uploadAvatar = async (file: File): Promise<string> => {
-    return upload(file, "avatars");
+export const uploadAvatar = async (base: string, file: File): Promise<string> => {
+    return upload(base, file, "avatars");
 }

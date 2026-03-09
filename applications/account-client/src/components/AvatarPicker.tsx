@@ -5,6 +5,7 @@ import { Button } from "@nextania/ui";
 import { CDN } from "@nextania/core-api";
 import { Image } from "../routes/manage/Profile";
 import { Content, Overlay } from "./Dialog";
+import { useGlobalState } from "../context";
 
 const StagedImage = styled.img`
     width: 200px;
@@ -16,6 +17,7 @@ const StagedImage = styled.img`
 
 const AvatarPicker = (props: { stagedImage: Accessor<Image | undefined>; }) => {
     const dialogContext = createMemo(() => Dialog.useContext());
+    const state = createMemo(() => useGlobalState());
     const closeDialog = () => {
         dialogContext().setOpen(false);
     };
@@ -23,7 +25,7 @@ const AvatarPicker = (props: { stagedImage: Accessor<Image | undefined>; }) => {
     const save = () => {
         dialogContext().setOpen(false);
         // Save the image
-        CDN.uploadAvatar(props.stagedImage()!.file);
+        CDN.uploadAvatar(state().get("serverConfig")!.cdnRoot, props.stagedImage()!.file);
     }
 
     return (
