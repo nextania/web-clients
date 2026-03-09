@@ -22,6 +22,6 @@ jobs:
     - name: Install dependencies
       run: bun install --frozen-lockfile
 
-    - name: Build
-      run: bun run build
+    - name: Build account-client
+      run: cd applications/account-client && bun run build
   

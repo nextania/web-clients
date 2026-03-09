@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on: 
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Log in to container registry
+      uses: docker/login-action@v4
+      with:
+        registry: quay.nextania.com
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+    - name: Build and push account-client
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: applications/account-client/Dockerfile
+        push: true
+        tags: quay.nextania.com/nextania/account-client:git, quay.nextania.com/nextania/account-client:${{ github.sha }}
