@@ -66,7 +66,6 @@ export const createSessionPasskey = async (existingSession?: string): Promise<Cl
             } catch {}
         }
     } catch {}
-    return undefined;
 };
 
 export const validateSession = async (token: string, keyB: Uint8Array, escalationToken?: string): Promise<Client> => {
