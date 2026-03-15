@@ -1,5 +1,5 @@
 import { styled } from "solid-styled-components";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import { Link } from "@nextania/ui";
 import { VERSION } from "../constants";
 

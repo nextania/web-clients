@@ -4,8 +4,8 @@ import { createMemo, createSignal, Match, onMount, Show, Switch } from "solid-js
 import { Button, Box, OtpInput } from "@nextania/ui";
 import { useGlobalState, useUserState } from "../../context";
 import { MfaContinueFunction, RequestError } from "@nextania/core-api";
-import { useTranslate } from "../../utilities/i18n";
-import { RenderableError, RenderableErrorType } from "../../utilities/errors";
+import { useTranslate } from "../../i18n";
+import { RenderableError, RenderableErrorType } from "../../errors";
 
 type AuthenticateStage =  "ONBOARD" | "MFA";
 type AuthenticateError = RenderableErrorType | "EMPTY_CODE" | "INVALID_CODE";

@@ -4,12 +4,12 @@ import { createEffect, createMemo, createSignal, onMount, Show } from "solid-js"
 import { useGlobalState, useUserState } from "../../context";
 import Mfa from "../../components/dialogs/Mfa";
 import Dialog from "@corvu/dialog";
-import { calculateEntropy } from "../../utilities/client";
+import { calculateEntropy } from "../../utilities";
 import { useNavigate } from "@solidjs/router";
 import Delete from "../../components/dialogs/Delete";
 import { styled } from "solid-styled-components";
 import { Passkey } from "@nextania/core-api";
-import { useTranslate } from "../../utilities/i18n";
+import { useTranslate } from "../../i18n";
 
 type DialogType = "DELETE" | "MFA" | "NONE";
 

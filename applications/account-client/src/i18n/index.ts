@@ -1,5 +1,5 @@
 import { translator } from "@solid-primitives/i18n";
-import { useGlobalState } from "../../context";
+import { useGlobalState } from "../context";
 const languages = import.meta.glob("./*.json");
 const l = Object.keys(languages).reduce((acc, key) => {
     const lang = key.split("/")[1].split(".")[0] as Language;

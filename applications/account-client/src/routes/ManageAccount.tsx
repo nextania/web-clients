@@ -13,7 +13,7 @@ import AccountContainer from "../components/AccountContainer";
 import Sessions from "./manage/Sessions";
 import { Show } from "solid-js";
 import ContextMenuButton from "../components/ContextMenuButton";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import LanguagePicker from "../components/LanguagePicker";
 
 const MainDesktop = styled.main`

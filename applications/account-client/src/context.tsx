@@ -1,6 +1,6 @@
 import { Accessor, createContext, createEffect, createSignal, ParentProps, Setter, useContext } from "solid-js";
 import { Client, CurrentUser, ServerConfiguration } from "@nextania/core-api";
-import { getLanguage, Language } from "./utilities/i18n";
+import { getLanguage, Language } from "./i18n";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
 const StateContext = createContext<GlobalState>();

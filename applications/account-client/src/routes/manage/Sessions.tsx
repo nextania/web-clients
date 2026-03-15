@@ -6,7 +6,7 @@ import { createSignal, onMount } from "solid-js";
 import { useUserState } from "../../context";
 import { styled } from "solid-styled-components";
 import { Session } from "@nextania/core-api";
-import { useTranslate } from "../../utilities/i18n";
+import { useTranslate } from "../../i18n";
 
 const SessionList = styled.table`
     

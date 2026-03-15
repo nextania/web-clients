@@ -1,13 +1,13 @@
 import { createSignal, JSX, Match, onMount } from "solid-js";
 import Fade from "../components/Fade";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import ErrorText from "../components/ErrorText";
 import { Button, Link, Input, Title, Box } from "@nextania/ui";
 import { Switch as ConditionalSwitch } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { calculateEntropy, continueToRegisteredService } from "../utilities/client";
+import { calculateEntropy, continueToRegisteredService } from "../utilities";
 import { finishResetPassword, forgotPassword, RequestError, ForgotContinuation, hexToBytes, bytesToHex } from "@nextania/core-api";
-import { RenderableError, RenderableErrorType } from "../utilities/errors";
+import { RenderableError, RenderableErrorType } from "../errors";
 import { useGlobalState, useUserStateOptionally } from "../context";
 
 type ForgotStage = "email" | "sent" | "credentials" | "recovery" | "newrecovery" | "done" | "skip";

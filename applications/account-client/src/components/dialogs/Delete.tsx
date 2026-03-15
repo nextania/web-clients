@@ -4,8 +4,8 @@ import { createMemo, createSignal, Show } from "solid-js";
 import { Button, Box } from "@nextania/ui";
 import { useGlobalState, useUserState } from "../../context";
 import { useNavigate } from "@solidjs/router";
-import { useTranslate } from "../../utilities/i18n";
-import { RenderableError, RenderableErrorType } from "../../utilities/errors";
+import { useTranslate } from "../../i18n";
+import { RenderableError, RenderableErrorType } from "../../errors";
 import { RequestError } from "@nextania/core-api";
 
 const Delete = () => {

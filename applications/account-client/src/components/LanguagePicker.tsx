@@ -1,6 +1,6 @@
 import { Select } from "@nextania/ui";
 import { useGlobalState } from "../context";
-import { Language } from "../utilities/i18n";
+import { Language } from "../i18n";
 
 type LanguageOption = { value: Language; label: string };
 

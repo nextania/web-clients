@@ -5,7 +5,7 @@ import AvatarPicker from "../../components/AvatarPicker";
 import { createMemo, createSignal, onMount } from "solid-js";
 import Dialog from "@corvu/dialog";
 import { useGlobalState, useUserState } from "../../context";
-import { useTranslate } from "../../utilities/i18n";
+import { useTranslate } from "../../i18n";
 
 const AvatarContainer = styled.div`
     display: flex;

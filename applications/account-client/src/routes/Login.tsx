@@ -1,6 +1,6 @@
 import { createSignal, JSX, Match, onMount, Show } from "solid-js";
 import Fade from "../components/Fade";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import ErrorText from "../components/ErrorText";
 import { Button, Link, OtpInput, Input, Title, Toggle, ToggleContainer } from "@nextania/ui";
 import { Switch as Switch } from "solid-js";
@@ -8,8 +8,8 @@ import { useNavigate } from "@solidjs/router";
 import { styled } from "solid-styled-components";
 import { createSession, PartialClient, createSessionPasskey, RequestError, encode } from "@nextania/core-api";
 import { useGlobalState, useUserStateOptionally } from "../context";
-import { RenderableError, RenderableErrorType } from "../utilities/errors";
-import { continueToRegisteredService, getBrowser } from "../utilities/client";
+import { RenderableError, RenderableErrorType } from "../errors";
+import { continueToRegisteredService, getBrowser } from "../utilities";
 
 type LoginStage = "credentials" | "2fa" | "done" | "skip";
 

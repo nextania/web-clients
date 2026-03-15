@@ -3,13 +3,13 @@ import { Button, Input, Title, Box, Link, OtpInput } from "@nextania/ui";
 import Fade from "../components/Fade";
 import ErrorText from "../components/ErrorText";
 import { styled } from "solid-styled-components";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import { createEffect, createSignal, Match, onMount, Show, Switch } from "solid-js";
 import { useNavigate } from "@solidjs/router";
-import { calculateEntropy, continueToRegisteredService, getBrowser } from "../utilities/client";
+import { calculateEntropy, continueToRegisteredService, getBrowser } from "../utilities";
 import { createAccount, RegistrationContinuation, RequestError, bytesToHex, encode } from "@nextania/core-api";
 import { useGlobalState, useUserStateOptionally } from "../context";
-import { RenderableError, RenderableErrorType } from "../utilities/errors";
+import { RenderableError, RenderableErrorType } from "../errors";
 const ButtonContainer = styled.div`
     & > :not([hidden]) ~ :not([hidden]) {
         margin-top: 0.5rem;

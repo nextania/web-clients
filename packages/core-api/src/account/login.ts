@@ -2,7 +2,7 @@ import { client } from "@serenity-kit/opaque";
 import { callEndpoint } from "./routes";
 import { Client, ElevatedClient } from "./manage";
 import { decryptKey, decryptPasskeyKey } from ".";
-import { getBrowser } from "../../../../applications/account-client/src/utilities/client";
+import { getBrowser } from "../../../../applications/account-client/src/utilities";
 
 export class PartialClient {
     constructor(private continuation: string, private password: string) {}

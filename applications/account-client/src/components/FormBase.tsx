@@ -1,6 +1,6 @@
 import { createEffect, createSignal, Match, onCleanup, ParentProps, Switch } from "solid-js";
 import { styled } from "solid-styled-components";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import Footer from "./Footer";
 import Logo from "./Logo";
 import LanguagePicker from "./LanguagePicker";

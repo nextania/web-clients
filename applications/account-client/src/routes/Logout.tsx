@@ -1,7 +1,7 @@
 import { onMount, Show } from "solid-js";
 import Fade from "../components/Fade";
 import { Title } from "@nextania/ui";
-import { useTranslate } from "../utilities/i18n";
+import { useTranslate } from "../i18n";
 import { useUserStateOptionally } from "../context";
 
 const Logout = () => {
