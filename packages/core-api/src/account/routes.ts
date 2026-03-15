@@ -315,7 +315,9 @@ const routes = {
             }),
             response: object({
                 continueToken: string(),
-                message: object(),
+                message: object({
+                    publicKey: object(),
+                }),
             })
         }
     },
