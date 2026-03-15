@@ -1,36 +1,33 @@
 import Dialog from "@corvu/dialog";
 import { Content, Overlay } from "../Dialog";
-import { Accessor, createMemo, createSignal, Setter, Show } from "solid-js";
+import { createMemo, createSignal, Show } from "solid-js";
 import { Button, Box } from "@nextania/ui";
-import { useGlobalState } from "../../context";
+import { useGlobalState, useUserState } from "../../context";
 import { useNavigate } from "@solidjs/router";
 import { useTranslate } from "../../utilities/i18n";
 import { RenderableError, RenderableErrorType } from "../../utilities/errors";
 import { RequestError } from "@nextania/core-api";
 
-// TODO: replace this with state.set("loading", true)
-// TODO: add language to state
-const Delete = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> }) => {
+const Delete = () => {
     const [error, setError] = createSignal<RenderableErrorType>();
-    const state = createMemo(() => useGlobalState());
     const dialogContext = createMemo(() => Dialog.useContext());
-    const loading = createMemo(() => state().get("sessionData")?.loading);
     const navigate = useNavigate();
     const t = useTranslate();
+    const globalState = useGlobalState();
+    const userState = useUserState();
     
     const next = async () => {
         if (error()) setError(undefined);
-        props.setLoading(true);
-        const client = state().get("session");
-        if (!client || !client.isElevated()) return console.error("No session found");
+        globalState.setLoading(true);
+        if (!userState.session.isElevated()) return console.error("Session should be elevated");
         try {
-            await client.deleteAccount();
+            await userState.session.deleteAccount();
             navigate("/login");
         } catch (e) {
             const error = RenderableError.fromError(e as RequestError).render();
             setError(error);
         }
-        props.setLoading(false);
+        globalState.setLoading(false);
     };
 
     const closeDialog = () => dialogContext().setOpen(false);
@@ -51,8 +48,8 @@ const Delete = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean>
                             {t(error()!)}
                         </Box>
                     </Show>
-                    <Button onClick={next} disabled={props.loading()}>{t("CONTINUE")}</Button>
-                    <Button onClick={closeDialog} disabled={props.loading()}>{t("CANCEL")}</Button>
+                    <Button onClick={next} disabled={globalState.loading()}>{t("CONTINUE")}</Button>
+                    <Button onClick={closeDialog} disabled={globalState.loading()}>{t("CANCEL")}</Button>
                 </Content>
             </Dialog.Portal>
         </>

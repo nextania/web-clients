@@ -2,9 +2,9 @@ import { styled } from "solid-styled-components";
 import { Input, Button } from "@nextania/ui";
 import { Section } from "../ManageAccount";
 import AvatarPicker from "../../components/AvatarPicker";
-import { Accessor, createMemo, createSignal, onMount, Setter } from "solid-js";
+import { createMemo, createSignal, onMount } from "solid-js";
 import Dialog from "@corvu/dialog";
-import { useGlobalState } from "../../context";
+import { useGlobalState, useUserState } from "../../context";
 import { useTranslate } from "../../utilities/i18n";
 
 const AvatarContainer = styled.div`
@@ -32,14 +32,14 @@ flex-direction:column;
 `;
 
 
-const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoading: Setter<boolean>; }) => {
+const Profile = () => {
     const [stagedImage, setStagedImage] = createSignal<Image>();
     const dialogContext = createMemo(() => Dialog.useContext());
-    const state = createMemo(() => useGlobalState());
     const [displayName, setDisplayName] = createSignal<string>();
     const [description, setDescription] = createSignal<string>();
     const t = useTranslate();
-    const cdnRoot = () => state().get("serverConfig")?.cdnRoot!;
+    const userState = useUserState();
+    const globalState = useGlobalState();
     const handleAvatarChange = () => {
         const input = document.createElement("input");
         input.type = "file";
@@ -63,26 +63,16 @@ const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
     };
 
     onMount(async () => {
-        setLoading(true);
-        let settings = state().get("settings");
-        if (!settings) {
-            const session = state().get("session");
-            if (!session) return console.error("No session found");
-            const user = await session.getSettings();
-            settings = user;
-            state().set("settings", user);
-        }
-        setDisplayName(settings.displayName);
-        setDescription(settings.description);
-        setLoading(false);
+        globalState.setLoading(true);
+        setDisplayName(userState.settings.displayName);
+        setDescription(userState.settings.description);
+        globalState.setLoading(false);
     });
 
     const save = () => {
-        let existingSettings = state().get("settings");
-        if (!existingSettings) return;
         let dn = displayName()?.trim();
         let desc = description()?.trim();
-        if (existingSettings.displayName === dn && existingSettings.description === desc) return;
+        if (userState.settings.displayName === dn && userState.settings.description === desc) return;
         if (!dn) return;
         if (dn.length > 64) { // TODO: errors
             return;
@@ -91,13 +81,11 @@ const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
         if (desc && desc.length > 256) { // TODO: make this a constant
             return;
         }
-        const session = state().get("session");
-        if (!session) return console.error("No session found");
-        session.commitProfile({
+        userState.session.commitProfile({
             displayName: displayName(),
             description: description(),
         });
-        state().update("settings", {
+        userState.updateSettings({
             displayName: displayName(),
             description: description(),
         });
@@ -109,15 +97,15 @@ const Profile = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
             <Section>
                 <AvatarConfigurator>
                     <AvatarContainer onClick={handleAvatarChange}>
-                        <img src={`${cdnRoot()}/assets/default.png`} alt="avatar" />
+                        <img src={`${globalState.serverConfig.cdnRoot}/assets/default.png`} alt="avatar" />
                     </AvatarContainer>
                     <Button>{t("REMOVE_AVATAR")}</Button>
                 </AvatarConfigurator>
             </Section>
             <Section>
-                <Input placeholder={t("DISPLAY_NAME")} loading={loading()} value={displayName()} onChange={e => setDisplayName((e.target as HTMLInputElement).value)}  />
-                <Input placeholder={t("PROFILE_DESCRIPTION")} loading={loading()} value={description()} onChange={e => setDescription((e.target as HTMLInputElement).value)}  />
-                <Button onClick={save} disabled={loading()}>{t("SAVE")}</Button>
+                <Input placeholder={t("DISPLAY_NAME")} loading={globalState.loading()} value={displayName()} onChange={e => setDisplayName((e.target as HTMLInputElement).value)}  />
+                <Input placeholder={t("PROFILE_DESCRIPTION")} loading={globalState.loading()} value={description()} onChange={e => setDescription((e.target as HTMLInputElement).value)}  />
+                <Button onClick={save} disabled={globalState.loading()}>{t("SAVE")}</Button>
             </Section>
             <AvatarPicker stagedImage={stagedImage} />
         </>

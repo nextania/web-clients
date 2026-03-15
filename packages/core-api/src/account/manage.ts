@@ -1,18 +1,19 @@
-import { boolean, Infer, nullable, object, omit, optional, string } from "superstruct";
+import { boolean, Infer, nullable, object, omit, string } from "superstruct";
 import { ApiRequest, ApiResponse, callEndpoint, Method, Route } from "./routes";
 import { PartialClient } from "./login";
 import { client } from "@serenity-kit/opaque";
-import { create } from "@github/webauthn-json";
+import { xchacha20poly1305 } from "@noble/ciphers/chacha.js";
+import { managedNonce } from "@noble/ciphers/utils.js";
+import { encode, encryptKey } from ".";
 
 export const CurrentUser = object({
     id: string(),
-    email: nullable(string()),
+    email: string(),
     username: string(),
     mfaEnabled: boolean(),
     displayName: string(),
     description: string(),
     avatar: nullable(string()),
-    oidcProvider: nullable(string()),
 });
 
 export const PublicUser = omit(CurrentUser, ["email", "mfaEnabled"]);
@@ -33,7 +34,7 @@ export type Profile = Infer<typeof Profile>;
 export const Session = object({
     id: string(),
     friendlyName: string(),
-    ip: optional(string()),
+    ip: nullable(string()),
 });
 
 export type Session = Infer<typeof Session>;
@@ -46,7 +47,8 @@ export const Passkey = object({
 export type Passkey = Infer<typeof Passkey>;
 
 export class Client {
-    constructor(private id: string | null, private accessToken: string) {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    constructor(_id: string | null, private accessToken: string, public keyB: Uint8Array) {}
     needsContinuation(): this is PartialClient {
         return this instanceof PartialClient;
     }
@@ -111,8 +113,8 @@ export type MfaOperation = {
 }
 
 export class ElevatedClient extends Client {
-    constructor(id: string | null, token: string, private escalationToken: string) {
-        super(id, token);
+    constructor(id: string | null, token: string, private escalationToken: string, keyB: Uint8Array) {
+        super(id, token, keyB);
     }
 
     isElevated(): this is ElevatedClient {
@@ -127,7 +129,8 @@ export class ElevatedClient extends Client {
         const { clientRegistrationState, registrationRequest } = client.startRegistration({ password });
         const response = await this.callEndpoint("updatePassword1", { escalationToken: this.escalationToken, message: registrationRequest, stage: "BEGIN_UPDATE" });
         const result = client.finishRegistration({ clientRegistrationState, password, registrationResponse: response.message });
-        await this.callEndpoint("updatePassword2", { continueToken: response.continueToken, message: result.registrationRecord, stage: "FINISH_UPDATE" });
+        const encryptedKey = await encryptKey(this.keyB, password);
+        await this.callEndpoint("updatePassword2", { continueToken: response.continueToken, message: result.registrationRecord, stage: "FINISH_UPDATE", encryptedKey });
     }
 
     async deleteAccount(): Promise<void> {
@@ -157,9 +160,29 @@ export class ElevatedClient extends Client {
 
     async createPasskey(): Promise<void> {
         const result = await this.callEndpoint("registerPasskey1", { escalationToken: this.escalationToken, stage: "BEGIN_REGISTER" });
-        const credential = await create(result.message as any);
+        const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(result.message as any);
+        const credential = await navigator.credentials.create({ publicKey }) as PublicKeyCredential | null;
         if (credential) {
-            await this.callEndpoint("registerPasskey2", { stage: "FINISH_REGISTER", continueToken: result.continueToken, message: credential as any });
+            const prf = credential.getClientExtensionResults().prf?.results?.first;
+            if (!prf) {
+                throw new Error("Passkey creation failed, PRF unavailable");
+            }
+            const baseKey = await crypto.subtle.importKey("raw", prf, { name: "HKDF" }, false, ["deriveBits"]);
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const info = new TextEncoder().encode("nextania-passkey");
+            const derivedKeyBits = await crypto.subtle.deriveBits({ 
+                name: "HKDF", 
+                hash: "SHA-256", 
+                salt,
+                info,
+            }, baseKey, 256);
+            const encryptedResult = managedNonce(xchacha20poly1305)(new Uint8Array(derivedKeyBits)).encrypt(this.keyB);
+            // Prepend HKDF salt so it can be recovered during passkey login
+            const combined = new Uint8Array(salt.length + encryptedResult.length);
+            combined.set(salt);
+            combined.set(encryptedResult, salt.length);
+            const encryptedKey = encode(combined);
+            await this.callEndpoint("registerPasskey2", { stage: "FINISH_REGISTER", continueToken: result.continueToken, message: credential as any, encryptedKey });
         } else {
             throw new Error("No passkey provided");
         }

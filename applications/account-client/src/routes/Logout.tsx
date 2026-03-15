@@ -1,47 +1,33 @@
-import { createSignal, onMount, Show } from "solid-js";
+import { onMount, Show } from "solid-js";
 import Fade from "../components/Fade";
 import { Title } from "@nextania/ui";
-import { validateSession } from "@nextania/core-api";
 import { useTranslate } from "../utilities/i18n";
+import { useUserStateOptionally } from "../context";
 
 const Logout = () => {
-    const [validSession, setValidSession] = createSignal(false);
-    const [checked, setChecked] = createSignal(false);
+    const userState = useUserStateOptionally();
     const t = useTranslate();
 
-    const checkToken = async () => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            const session = await validateSession(token);
-            if (session) {
-                setValidSession(true);
-                await session.logout().then(() => localStorage.removeItem("token")).then(() => localStorage.removeItem("escalationToken"));
-            }
-        }
-        setChecked(true);
-    };
-
-    onMount(() => {
-        checkToken();
+    onMount(async () => {
+        userState?.session.logout();
+        localStorage.removeItem("token");
+        localStorage.removeItem("escalationToken");
+        localStorage.removeItem("keyB");
+        sessionStorage.removeItem("keyB");
     });
 
     return (
-        <Show when={checked()} fallback={<div />}>
-            <Fade hiding={false}>
-                <Show when={validSession()} fallback={
-                    (
-                        <>
-                           <Title>{t("LOGGED_OUT")}</Title>
-                            <p>{t("LOGGED_OUT_NOT_LOGGED_IN")}</p>
-                        </>
-                    )
-                }>
+        <Fade hiding={false}>
+            <Show when={userState} fallback={
+                <>
                     <Title>{t("LOGGED_OUT")}</Title>
-                    <p>{t("LOGGED_OUT_SUCCESS")}</p>
-                </Show>
-            </Fade>
-            
-        </Show>
+                    <p>{t("LOGGED_OUT_NOT_LOGGED_IN")}</p>
+                </>
+            }>
+                <Title>{t("LOGGED_OUT")}</Title>
+                <p>{t("LOGGED_OUT_SUCCESS")}</p>
+            </Show>
+        </Fade>
     )
 };
 export default Logout;

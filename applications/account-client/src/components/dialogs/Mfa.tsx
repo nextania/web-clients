@@ -1,8 +1,8 @@
 import Dialog from "@corvu/dialog";
 import { Content, Overlay } from "../Dialog";
-import { Accessor, createMemo, createSignal, Match, onMount, Setter, Show, Switch } from "solid-js";
+import { createMemo, createSignal, Match, onMount, Show, Switch } from "solid-js";
 import { Button, Box, OtpInput } from "@nextania/ui";
-import { useGlobalState } from "../../context";
+import { useGlobalState, useUserState } from "../../context";
 import { MfaContinueFunction, RequestError } from "@nextania/core-api";
 import { useTranslate } from "../../utilities/i18n";
 import { RenderableError, RenderableErrorType } from "../../utilities/errors";
@@ -10,9 +10,7 @@ import { RenderableError, RenderableErrorType } from "../../utilities/errors";
 type AuthenticateStage =  "ONBOARD" | "MFA";
 type AuthenticateError = RenderableErrorType | "EMPTY_CODE" | "INVALID_CODE";
 
-// TODO: replace this with state.set("loading", true)
-// TODO: add language to state
-const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> }) => {
+const Mfa = () => {
     const [stage, setStage] = createSignal<AuthenticateStage>("ONBOARD");
     const [qrCode, setQrCode] = createSignal<string>("");
     const [codes, setCodes] = createSignal<string[]>([]);
@@ -20,15 +18,15 @@ const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> })
     const [mfaCode, setMfaCode] = createSignal<string>("");
     const [continueFunction, setContinueFunction] = createSignal<MfaContinueFunction>();
     const [error, setError] = createSignal<AuthenticateError>();
-    const state = createMemo(() => useGlobalState());
     const dialogContext = createMemo(() => Dialog.useContext());
     const t = useTranslate();
+    const userState = useUserState();
+    const globalState = useGlobalState();
 
     onMount(async () => {
-        const client = state().get("session");
-        if (!client || !client.isElevated()) return console.error("No session found");
+        if (!userState.session.isElevated()) return console.error("Session should be elevated");
         try {
-            const result = await client.configureMfa();
+            const result = await userState.session.configureMfa();
         
             if (!result.pendingEnable) {
                 // no pending enable, so we're done
@@ -48,7 +46,7 @@ const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> })
     
     const next = async () => {
         if (error()) setError(undefined);
-        props.setLoading(true);
+        globalState.setLoading(true);
         if (stage() === "ONBOARD") {            
             //transition to next stage
             setStage("MFA");
@@ -60,14 +58,14 @@ const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> })
             if (mfaCode().length !== 8) return setError("INVALID_CODE");
             try {
                 await cf(mfaCode());
-                state().update("settings", { mfaEnabled: true });
+                userState.updateSettings({ mfaEnabled: true });
                 closeDialog();
             } catch (e) {
                 const error = RenderableError.fromError(e as RequestError).render();
                 setError(error === "INVALID_CREDENTIALS" ? "INVALID_CODE" : error);
             }
         }
-        props.setLoading(false);
+        globalState.setLoading(false);
     };
 
     const closeDialog = () => {
@@ -103,7 +101,7 @@ const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> })
                         <Match when={stage() === "MFA"}>
                             <h1>{t("ENTER_CODE")}</h1>
                             <OtpInput code={mfaCode} setCode={setMfaCode} />
-                            <Button onClick={() => setStage("ONBOARD")} disabled={props.loading()}>{t("BACK")}</Button>
+                            <Button onClick={() => setStage("ONBOARD")} disabled={globalState.loading()}>{t("BACK")}</Button>
                         </Match>
                     </Switch>
                     <Show when={error() !== undefined}>
@@ -111,8 +109,8 @@ const Mfa = (props: { loading: Accessor<boolean>; setLoading: Setter<boolean> })
                             {error()}
                         </Box>
                     </Show>
-                    <Button onClick={next} disabled={props.loading()}>{t("CONTINUE")}</Button>
-                    <Button onClick={closeDialog} disabled={props.loading()}>{t("CANCEL")}</Button>
+                    <Button onClick={next} disabled={globalState.loading()}>{t("CONTINUE")}</Button>
+                    <Button onClick={closeDialog} disabled={globalState.loading()}>{t("CANCEL")}</Button>
                 </Content>
             </Dialog.Portal>
         </>

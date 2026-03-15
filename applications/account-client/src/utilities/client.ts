@@ -23,3 +23,14 @@ export const getBrowser = () => {
         return "Safari";
     }
 }
+
+export const continueToRegisteredService = (trustedServices: string[], token: string) => {        
+    setTimeout(() => {
+        const getContinueUrl = new URLSearchParams(window.location.search).get("continue");
+        const url = new URL(getContinueUrl ? getContinueUrl : trustedServices[0]);
+        if (trustedServices.some((x: string) => x === url.origin + url.pathname)) {
+            url.searchParams.set("token", token);
+        }
+        window.location.href = url.toString();
+    }, 1000);
+};

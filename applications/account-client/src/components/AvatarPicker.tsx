@@ -17,7 +17,7 @@ const StagedImage = styled.img`
 
 const AvatarPicker = (props: { stagedImage: Accessor<Image | undefined>; }) => {
     const dialogContext = createMemo(() => Dialog.useContext());
-    const state = createMemo(() => useGlobalState());
+    const globalState = useGlobalState();
     const closeDialog = () => {
         dialogContext().setOpen(false);
     };
@@ -25,7 +25,7 @@ const AvatarPicker = (props: { stagedImage: Accessor<Image | undefined>; }) => {
     const save = () => {
         dialogContext().setOpen(false);
         // Save the image
-        CDN.uploadAvatar(state().get("serverConfig")!.cdnRoot, props.stagedImage()!.file);
+        CDN.uploadAvatar(globalState.serverConfig.cdnRoot, props.stagedImage()!.file);
     }
 
     return (

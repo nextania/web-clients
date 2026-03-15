@@ -1,36 +1,37 @@
-import { createMemo, createSignal, Match, onMount, ParentProps, Show, Switch } from "solid-js";
+import { createResource, Match, ParentProps, Show, Switch } from "solid-js";
 import { Navigate } from "@solidjs/router";
-import { useGlobalState } from "../context";
-import { validateSession } from "@nextania/core-api";
+import { UserStateProvider } from "../context";
+import { validateSession, decode } from "@nextania/core-api";
 
-const Authenticated = (props: ParentProps) => {
-    const [checked, setChecked] = createSignal(false);
-    const [authenticated, setAuthenticated] = createSignal(false);
-    const state = createMemo(() => useGlobalState())
-    
-    const checkToken = async () => {
+const Authenticated = (props: ParentProps<{ noRedirect?: boolean }>) => {
+    const [client] = createResource(async () => {
         const token = localStorage.getItem("token");
         const escalationToken = localStorage.getItem("escalationToken");
         if (token) {
             try {
-                const session = await validateSession(token, escalationToken || undefined);
-                setAuthenticated(true);
-                state().set("session", session);
+                const storedKeyB = localStorage.getItem("keyB") ?? sessionStorage.getItem("keyB");
+                if (!storedKeyB) throw new Error("KEY_UNAVAILABLE");
+                const keyB = decode(storedKeyB);
+                const session = await validateSession(token, keyB, escalationToken || undefined);
+                const user = await session.getSettings();
+                return [session, user, keyB] as const;
             } catch {}
         }
-        setChecked(true);
-    };
-
-    onMount(() => {
-        checkToken();
     });
 
     return (
-        <Show when={checked()}>
+        <Show when={!client.loading}>
             <Switch>
-                <Match when={authenticated()}>{props.children}</Match>
-                <Match when={!authenticated()}>
+                <Match when={!client() && !props.noRedirect}>
                     <Navigate href={`/login?continue=${encodeURIComponent(location.href)}`} />
+                </Match>
+                <Match when={!!client()}>
+                    <UserStateProvider session={client()![0]} initialSettings={client()![1]} keyB={client()![2]}>
+                        {props.children}
+                    </UserStateProvider>
+                </Match>
+                <Match when={props.noRedirect && !client()}>
+                    {props.children}
                 </Match>
             </Switch>
         </Show>

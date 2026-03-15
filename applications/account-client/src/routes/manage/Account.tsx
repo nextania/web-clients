@@ -1,7 +1,7 @@
 import { Button, Input, Toggle, ToggleContainer, Box } from "@nextania/ui";
 import { Section } from "../ManageAccount";
 import { Accessor, createEffect, createMemo, createSignal, onMount, Setter, Show } from "solid-js";
-import { useGlobalState } from "../../context";
+import { useGlobalState, useUserState } from "../../context";
 import Mfa from "../../components/dialogs/Mfa";
 import Dialog from "@corvu/dialog";
 import { calculateEntropy } from "../../utilities/client";
@@ -37,52 +37,41 @@ const PasskeyListContainer = styled.div`
     padding: 10px;
 `;
 
-const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoading: Setter<boolean>; }) => {
+const Account = () => {
     const [username, setUsername] = createSignal<string>();
     const [newPassword, setNewPassword] = createSignal<string>("");
     const [twoFactor, setTwoFactor] = createSignal<boolean>();
-    const state = createMemo(() => useGlobalState());
+    const userState = useUserState();
     const dialogContext = createMemo(() => Dialog.useContext());
     const [dialogType, setDialogType] = createSignal<DialogType>();
-    const escalated = createMemo(() => state().get("session")?.isElevated());
     const navigate = useNavigate();
     const [passkeys, setPasskeys] = createSignal<Passkey[]>([]);
     const t = useTranslate();
+    const globalState = useGlobalState();
 
     onMount(async () => {
-        setLoading(true);
-        let settings = state().get("settings");
-        const session = state().get("session");
-        if (!session) return console.error("No session found");
-        if (!settings) {
-            settings = await session.getSettings();
-            state().set("settings", settings);
-        }
-        const passkeys = await session.getPasskeys();
+        globalState.setLoading(true);
+        const passkeys = await userState.session.getPasskeys();
         setPasskeys(passkeys);
-        setTwoFactor(settings.mfaEnabled);
-        setUsername(settings.username);
-        setLoading(false);
+        setTwoFactor(userState.settings.mfaEnabled);
+        setUsername(userState.settings.username);
+        globalState.setLoading(false);
     });
 
     createEffect(async () => {
-        let settings = state().get("settings");
-        if (settings) {
-            let mfa = twoFactor();
-            if (mfa !== undefined && mfa !== settings.mfaEnabled) {
-                if (settings.mfaEnabled === false && mfa === true) {
-                    // open setup dialog
-                    setDialogType("MFA");
-                    dialogContext().setOpen(true);
-                } else {
-                    const client = state().get("session");
-                    if (client && client.isElevated()) {
-                        try {
-                            await client.configureMfa();
-                            state().update("settings", { mfaEnabled: false });
-                        } catch(e) {
-                            state().update("settings", { mfaEnabled: true });   
-                        }
+        let mfa = twoFactor();
+        if (mfa !== undefined && mfa !== userState.settings.mfaEnabled) {
+            if (userState.settings.mfaEnabled === false && mfa === true) {
+                // open setup dialog
+                setDialogType("MFA");
+                dialogContext().setOpen(true);
+            } else {
+                if (userState.session.isElevated()) {
+                    try {
+                        await userState.session.configureMfa();
+                        userState.updateSettings({ mfaEnabled: false });
+                    } catch(e) {
+                        userState.updateSettings({ mfaEnabled: true });   
                     }
                 }
             }
@@ -92,39 +81,34 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
     
     createEffect(() => {
         if (!dialogContext().open()) {
-            let settings = state().get("settings");
-            if (settings) {
-                setTwoFactor(settings.mfaEnabled);
-            }
+            setTwoFactor(userState.settings.mfaEnabled);
             setDialogType("NONE");
         }
     });
 
     const updateAccount = async () => {
         let newUsername: string|undefined = username()?.trim();
-        if (newUsername === state().get("settings")?.username || !newUsername) newUsername = undefined;
+        if (newUsername === userState.settings.username || !newUsername) newUsername = undefined;
         if (newUsername && !(/^[0-9A-Za-z_.-]{3,32}$/).test(newUsername)) {
             // TODO: show error
             return alert("Invalid username");
         }
         if (!newUsername) return; // no changes
-        setLoading(true);
-        const client = state().get("session");
-        if (client && client.isElevated()) {
+        globalState.setLoading(true);
+        if (userState.session.isElevated()) {
             try {
-                await client.commitAccountSettings({ username: newUsername });
+                await userState.session.commitAccountSettings({ username: newUsername });
             } catch {
                 window.location.reload();
             }
         }
-        setLoading(false);
+        globalState.setLoading(false);
     };
 
     const addPasskey = async () => {
-        const client = state().get("session");
-        if (client && client.isElevated()) {
+        if (userState.session.isElevated()) {
             try {
-                await client.createPasskey();
+                await userState.session.createPasskey();
             } catch(e) {
                 console.error(e);
                 window.location.reload();
@@ -140,16 +124,15 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
             return alert("Password is too weak");
         }
         if (!newPasswordUnwrap) return; // no changes
-        setLoading(true);
-        const client = state().get("session");
-        if (client && client.isElevated()) {
+        globalState.setLoading(true);
+        if (userState.session.isElevated()) {
             try {
-                await client.updatePassword(newPasswordUnwrap);
+                await userState.session.updatePassword(newPasswordUnwrap);
             } catch {
                 window.location.reload();
             }
         }
-        setLoading(false);
+        globalState.setLoading(false);
     }
 
     const deleteAccount = () => {
@@ -157,26 +140,27 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
         dialogContext().setOpen(true);
     };
     const deletePasskey = async (id: string) => {
-        setLoading(true);
-        const client = state().get("session");
-        if (client && client.isElevated()) {
+        globalState.setLoading(true);
+        if (userState.session.isElevated()) {
             try {
-                await client.deletePasskey(id);
-                const passkeys = await client.getPasskeys();
+                await userState.session.deletePasskey(id);
+                const passkeys = await userState.session.getPasskeys();
                 setPasskeys(passkeys);
             } catch {
                 window.location.reload();
             }
         }
-        setLoading(false);
+        globalState.setLoading(false);
     };
+
+    const disabled = globalState.loading() || dialogContext().open() || !userState.session.isElevated();
 
     return (
         <>
         
             <h1>{t("MANAGE_ACCOUNT")}</h1>
-                <Show when={!escalated()}>
-            <Section>
+            <Show when={!userState.session.isElevated()}>
+                <Section>
                     <Box type="error">
                         <div>
                             <h2>{t("ESCALATION_REQUIRED")}</h2>
@@ -188,24 +172,24 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
                             navigate("/escalate");
                         }}>{t("CONTINUE")}</Button>
                     </Box>
-            </Section>
+                </Section>
             </Show>
 
             <Section>
-                <Input placeholder={t("USERNAME")} loading={loading() || dialogContext().open() || !escalated()} value={username()} onChange={e => setUsername((e.target as HTMLInputElement).value)} />
-                <Button onClick={updateAccount}  disabled={loading() || dialogContext().open() || !escalated()}>{t("UPDATE_ACCOUNT")}</Button>
+                <Input placeholder={t("USERNAME")} loading={disabled} value={username()} onChange={e => setUsername((e.target as HTMLInputElement).value)} />
+                <Button onClick={updateAccount}  disabled={disabled}>{t("UPDATE_ACCOUNT")}</Button>
                     
             </Section>
             <Section>
-                <Input placeholder={t("NEW_PASSWORD")} loading={loading() || dialogContext().open() || !escalated()} type="password" value={newPassword()} onChange={e => setNewPassword((e.target as HTMLInputElement).value)} />
-                <Button onClick={updatePassword}  disabled={loading() || dialogContext().open() || !escalated()}>{t("UPDATE_PASSWORD")}</Button>
+                <Input placeholder={t("NEW_PASSWORD")} loading={disabled} type="password" value={newPassword()} onChange={e => setNewPassword((e.target as HTMLInputElement).value)} />
+                <Button onClick={updatePassword}  disabled={disabled}>{t("UPDATE_PASSWORD")}</Button>
             </Section>
             <Section>
                 <Box type="warning">
                     {t("MFA_DESCRIPTION")}
                 </Box>
                 <ToggleContainer>
-                    <Toggle checked={twoFactor} setChecked={setTwoFactor} disabled={loading() || dialogContext().open() || !escalated()} />
+                    <Toggle checked={twoFactor} setChecked={setTwoFactor} disabled={disabled} />
                     <span>{t("MFA")}</span>
                 </ToggleContainer>
             </Section>
@@ -216,7 +200,7 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
                         {t("PASSKEYS_DESCRIPTION")}
                     </p>
                 </Box>
-                <Button onClick={addPasskey} disabled={loading() || dialogContext().open() || !escalated()}>{t("PASSKEYS_ADD")}</Button>
+                <Button onClick={addPasskey} disabled={disabled}>{t("PASSKEYS_ADD")}</Button>
                 <PasskeyListContainer>
                     <PasskeyList>
                         <thead>
@@ -232,7 +216,7 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
                                     <td>{p.id}</td>
                                     <td>{p.friendlyName}</td>
                                     <td>
-                                        <Button onClick={() => deletePasskey(p.id)} disabled={loading() || dialogContext().open() || !escalated()}>{t("PASSKEYS_DELETE")}</Button>
+                                        <Button onClick={() => deletePasskey(p.id)} disabled={disabled}>{t("PASSKEYS_DELETE")}</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -247,13 +231,13 @@ const Account = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoadi
                         {t("DELETE_ACCOUNT_DESCRIPTION")}
                     </p>
                 </Box>
-                <Button onClick={deleteAccount} disabled={loading() || dialogContext().open() || !escalated()}>{t("DELETE_ACCOUNT")}</Button>
+                <Button onClick={deleteAccount} disabled={disabled}>{t("DELETE_ACCOUNT")}</Button>
             </Section>
             <Show when={dialogType() === "DELETE"}>
-                <Delete loading={loading} setLoading={setLoading} />
+                <Delete />
             </Show>
             <Show when={dialogType() === "MFA"}>
-                <Mfa loading={loading} setLoading={setLoading} />
+                <Mfa />
             </Show>
         </>
     )

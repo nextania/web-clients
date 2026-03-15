@@ -1,6 +1,7 @@
-import { Accessor, createContext, createSignal, ParentProps, Setter, useContext } from "solid-js";
+import { Accessor, createContext, createEffect, createSignal, ParentProps, Setter, useContext } from "solid-js";
 import { Client, CurrentUser, ServerConfiguration } from "@nextania/core-api";
-import { Language } from "./utilities/i18n";
+import { getLanguage, Language } from "./utilities/i18n";
+import { createStore, SetStoreFunction } from "solid-js/store";
 
 const StateContext = createContext<GlobalState>();
 
@@ -10,52 +11,60 @@ export const useGlobalState = () => {
     return context;
 };
 
-interface SessionData {
-    language: Language,
-    loading: boolean;
+interface GlobalState {
+    language: Accessor<Language>;
+    setLanguage: Setter<Language>;
+    loading: Accessor<boolean>;
+    setLoading: Setter<boolean>;
+    serverConfig: ServerConfiguration;
 }
 
-interface GlobalStateKeyMap {
-    session?: Client;
-    settings?: CurrentUser;
-    sessionData: SessionData;
-    serverConfig?: ServerConfiguration;
-}
-
-class GlobalState {
-    private state: Partial<Record<keyof GlobalStateKeyMap, GlobalStateKeyMap[keyof GlobalStateKeyMap]>> = {
-        sessionData: { language: localStorage.getItem("lang") as Language || "fr", loading: false }
-    };
-    private random: Accessor<number>;
-    private setRandom: Setter<number>;
-    constructor() {
-        const [random, setRandom] = createSignal(Math.random());
-        this.random = random;
-        this.setRandom = setRandom;
-    }
-
-    get<T extends keyof GlobalStateKeyMap>(key: T): GlobalStateKeyMap[T] {
-        this.random();
-        return this.state[key] as GlobalStateKeyMap[T];
-    }
-
-    set<T extends keyof GlobalStateKeyMap>(key: T, value: GlobalStateKeyMap[T]) {
-        this.state[key] = value;
-        this.setRandom(Math.random());
-    }
-
-    update<T extends keyof GlobalStateKeyMap>(key: T, value: Partial<GlobalStateKeyMap[T]>) {
-        this.state[key] = { ...this.state[key], ...value };
-        this.setRandom(Math.random());
-    }
-}
-
-export const state = new GlobalState();
-
-export const StateProvider = (props: ParentProps) => {
+export const GlobalStateProvider = (props: ParentProps<{ serverConfig: ServerConfiguration }>) => {
+    const [language, setLanguage] = createSignal<Language>(getLanguage());
+    const [loading, setLoading] = createSignal(false);
+    createEffect(() => {
+        localStorage.setItem("language", language());
+    });
     return (
-        <StateContext.Provider value={state}>
+        <StateContext.Provider value={{
+            language,
+            setLanguage,
+            loading,
+            setLoading,
+            serverConfig: props.serverConfig,
+        }}>
             {props.children}
         </StateContext.Provider>
+    );
+};
+
+const UserContext = createContext<UserState>();
+
+export const useUserState = () => {
+    const context = useContext(UserContext);
+    if (!context) throw new Error("useUserState must be used within a UserProvider");
+    return context;
+};
+
+export const useUserStateOptionally = () => useContext(UserContext);
+
+interface UserState {
+    session: Client;
+    settings: CurrentUser;
+    updateSettings: SetStoreFunction<CurrentUser>;
+    keyB: Uint8Array;
+}
+
+export const UserStateProvider = (props: ParentProps<{ session: Client, initialSettings: CurrentUser, keyB: Uint8Array }>) => {
+    const [settings, setSettings] = createStore(props.initialSettings);
+    return (
+        <UserContext.Provider value={{
+            session: props.session,
+            settings,
+            updateSettings: setSettings,
+            keyB: props.keyB,
+        }}>
+            {props.children}
+        </UserContext.Provider>
     );
 };

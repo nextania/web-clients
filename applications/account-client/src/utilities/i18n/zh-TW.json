@@ -112,5 +112,15 @@
     "MFA_SETUP_BACKUP": "請將這些一次性備份代碼保存在安全的地方。如果您無法訪問您的認證器應用，可以使用它們登錄。",
     "MFA_SETUP_NEVER_SHOWN_AGAIN": "這些代碼將不會再次顯示，因此請妥善保存。",
     "CREATED_AT": "創建於",
-    "REVOKE": "撤銷"
+    "REVOKE": "撤銷",
+
+    "RECOVERY_KEY_BACKUP": "保存您的恢復密鑰",
+    "RECOVERY_KEY_BACKUP_DESCRIPTION": "此密鑰是您忘記密码时恢复帐户的唯一方式。请将其保存在安全的地方；它将永远不会再次显示。",
+    "RECOVERY_KEY_LABEL": "您的恢复密钥",
+    "RECOVERY_KEY_COPIED": "已复制！",
+    "RECOVERY_KEY_COPY": "复制到剪贴板",
+    "RECOVERY_KEY_INPUT": "输入您的恢复密钥",
+    "RECOVERY_KEY_INVALID": "无效的恢复密钥格式",
+    "RECOVERY_KEY_NEW": "您的新恢复密钥",
+    "RECOVERY_KEY_NEW_DESCRIPTION": "已生成新的恢复密钥。请将其保存在安全的地方；它将永远不会再次显示。"
 }

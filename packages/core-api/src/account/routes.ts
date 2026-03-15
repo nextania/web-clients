@@ -35,6 +35,7 @@ const routes = {
                 mfaEnabled: boolean(),
                 continueToken: nullable(string()),
                 token: nullable(string()),
+                encryptedKey: nullable(string()),
             })
         }
     },
@@ -49,6 +50,7 @@ const routes = {
             }),
             response: object({
                 token: string(),
+                encryptedKey: string(),
             })
         }
     },
@@ -92,7 +94,10 @@ const routes = {
                 message: string(),
                 friendlyName: optional(string()),
                 username: string(),
+                persist: optional(boolean()),
                 displayName: string(),
+                encryptedKey: string(),
+                recoveryEncryptedKey: string(),
             }),
             response: object({
                 token: string(),
@@ -187,6 +192,7 @@ const routes = {
             response: object({
                 continueToken: string(),
                 message: string(),
+                recoveryEncryptedKey: string(),
             })
         }
     },
@@ -196,8 +202,10 @@ const routes = {
         types: {
             request: object({
                 stage: literal("FINISH_RESET"),
-                message: string(),
                 continueToken: string(),
+                message: string(),
+                encryptedKey: string(),
+                recoveryEncryptedKey: string(),
             }),
             response: object({})
         }
@@ -275,6 +283,7 @@ const routes = {
             }),
             response: object({
                 token: string(),
+                encryptedKey: string(),
             })
         }
     },
@@ -316,9 +325,10 @@ const routes = {
         types: {
             request: object({
                 stage: literal("FINISH_REGISTER"),
-                continueToken: string(),
                 message: object(),
+                continueToken: string(),
                 friendlyName: optional(string()),
+                encryptedKey: string(),
             }),
             response: object({})
         }
@@ -346,6 +356,7 @@ const routes = {
                 stage: literal("FINISH_UPDATE"),
                 continueToken: string(),
                 message: string(),
+                encryptedKey: string(),
             }),
             response: object({})
         }

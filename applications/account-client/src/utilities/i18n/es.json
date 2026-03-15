@@ -112,5 +112,15 @@
     "MFA_SETUP_BACKUP": "Guarde estos códigos de respaldo de un solo uso en un lugar seguro. Puede usarlos para iniciar sesión si pierde el acceso a su aplicación de autenticación.",
     "MFA_SETUP_NEVER_SHOWN_AGAIN": "Estos códigos nunca se mostrarán nuevamente, así que guárdelos de forma segura.",
     "CREATED_AT": "Creado en",
-    "REVOKE": "Revocar"
+    "REVOKE": "Revocar",
+
+    "RECOVERY_KEY_BACKUP": "Guarde su clave de recuperación",
+    "RECOVERY_KEY_BACKUP_DESCRIPTION": "Esta clave es la única forma de recuperar su cuenta si olvida su contraseña. Guárdela en un lugar seguro; nunca se mostrará nuevamente.",
+    "RECOVERY_KEY_LABEL": "Su clave de recuperación",
+    "RECOVERY_KEY_COPIED": "¡Copiado!",
+    "RECOVERY_KEY_COPY": "Copiar al portapapeles",
+    "RECOVERY_KEY_INPUT": "Ingrese su clave de recuperación",
+    "RECOVERY_KEY_INVALID": "Formato de clave de recuperación inválido",
+    "RECOVERY_KEY_NEW": "Su nueva clave de recuperación",
+    "RECOVERY_KEY_NEW_DESCRIPTION": "Se ha generado una nueva clave de recuperación. Guárdela en un lugar seguro; nunca se mostrará nuevamente."
 }

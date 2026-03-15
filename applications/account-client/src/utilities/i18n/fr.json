@@ -112,5 +112,15 @@
     "MFA_SETUP_BACKUP": "Conservez ces codes de secours à usage unique dans un endroit sûr. Vous pouvez les utiliser pour vous connecter si vous perdez l'accès à votre application d'authentification.",
     "MFA_SETUP_NEVER_SHOWN_AGAIN": "Ces codes ne seront jamais affichés à nouveau, alors veuillez les stocker en toute sécurité.",
     "CREATED_AT": "Créé à",
-    "REVOKE": "Révoquer"
+    "REVOKE": "Révoquer",
+
+    "RECOVERY_KEY_BACKUP": "Sauvegardez votre clé de récupération",
+    "RECOVERY_KEY_BACKUP_DESCRIPTION": "Cette clé est le seul moyen de récupérer votre compte si vous oubliez votre mot de passe. Stockez-le dans un endroit sûr ; il ne sera jamais affiché à nouveau.",
+    "RECOVERY_KEY_LABEL": "Votre clé de récupération",
+    "RECOVERY_KEY_COPIED": "Copié !",
+    "RECOVERY_KEY_COPY": "Copier dans le presse-papiers",
+    "RECOVERY_KEY_INPUT": "Entrez votre clé de récupération",
+    "RECOVERY_KEY_INVALID": "Format de clé de récupération invalide",
+    "RECOVERY_KEY_NEW": "Votre nouvelle clé de récupération",
+    "RECOVERY_KEY_NEW_DESCRIPTION": "Une nouvelle clé de récupération a été générée. Stockez-la dans un endroit sûr ; elle ne sera jamais affichée à nouveau."
 }

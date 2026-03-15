@@ -60,7 +60,6 @@ interface Props {
 
 export const Input = (props: Props) => {
     const [focused, setFocused] = createSignal(false);
-    const [empty, setEmpty] = createSignal(props.value === "");
     const inputId = `input-${Math.random().toString(36).substring(2, 9)}`;
     
     return (
@@ -73,7 +72,6 @@ export const Input = (props: Props) => {
                 value={props.value}
                 onChange={e => {
                     props.onChange && (props.onChange as Function)(e);
-                    setEmpty(e.target.value === "");
                 }}
                 onFocusIn={() => setFocused(true)}
                 onFocusOut={() => setFocused(false)}
@@ -81,7 +79,7 @@ export const Input = (props: Props) => {
                 autocomplete={props.autocomplete}
                 required={props.required}
             />
-            <InputLabel for={inputId} focused={focused()} empty={empty()}>{props.placeholder}</InputLabel>
+            <InputLabel for={inputId} focused={focused()} empty={props.value === ""}>{props.placeholder}</InputLabel>
         </InputContainer>
     );
 };

@@ -23,7 +23,8 @@ export type RenderableErrorType =
     | "LONG_DISPLAY_NAME" 
     | "INVALID_USERNAME"
     | "EMPTY_CODE"
-    | "INVALID_CODE";
+    | "INVALID_CODE"
+    | "RECOVERY_KEY_INVALID";
 
 export class RenderableError extends Error {
     constructor(public readonly type: RenderableErrorType) {

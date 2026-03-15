@@ -131,7 +131,7 @@ const TopContainer = styled.div`
 `;
 
 
-const ManageAccount = ({ loading, setLoading }: { loading: Accessor<boolean>; setLoading: Setter<boolean>; }) => {
+const ManageAccount = () => {
     const params = useParams();
     const navigate = useNavigate();
     const t = useTranslate();
@@ -168,12 +168,12 @@ const ManageAccount = ({ loading, setLoading }: { loading: Accessor<boolean>; se
                                 <Switch>
                                     <Match when={params.category === "account"}>
                                         <Dialog closeOnOutsidePointer={false}>
-                                            <Account loading={loading} setLoading={setLoading} />
+                                            <Account />
                                         </Dialog>
                                     </Match>
                                     <Match when={params.category === "profile"}>
                                         <Dialog closeOnOutsidePointer={false}>
-                                            <Profile loading={loading} setLoading={setLoading} />
+                                            <Profile />
                                         </Dialog>
                                     </Match>
                                     <Match when={params.category === "sessions"}>

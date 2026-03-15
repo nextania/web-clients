@@ -1,10 +1,10 @@
-import { Accessor, createEffect, createMemo, createSignal, Match, onCleanup, ParentProps, Switch } from "solid-js";
+import { createEffect, createSignal, Match, onCleanup, ParentProps, Switch } from "solid-js";
 import { styled } from "solid-styled-components";
 import { useTranslate } from "../utilities/i18n";
 import Footer from "./Footer";
 import Logo from "./Logo";
-import { useGlobalState } from "../context";
 import LanguagePicker from "./LanguagePicker";
+import { useGlobalState } from "../context";
 
 const FormBase = styled.div`
     padding-top: 2rem;
@@ -18,7 +18,7 @@ const FormBase = styled.div`
     margin: 10px;
     border-radius: 15px;
 
-    opacity: ${(props: { loading: Accessor<boolean>; }) => props.loading() ? 0.5 : 1};
+    opacity: ${(props: { loading: boolean; }) => props.loading ? 0.5 : 1};
 `;
 
 const FormContainerDesktop = styled.div`
@@ -121,9 +121,9 @@ const LogoContainerDesktop = styled.div`
 `;
 
 
-const Container = ({ children, loading, }: ParentProps<{ loading: Accessor<boolean>; }>) => {
+const Container = (props: ParentProps) => {
     const [isDesktop, setIsDesktop] = createSignal(window.innerWidth >= 768);
-    const state = createMemo(() => useGlobalState());
+    const state = useGlobalState();
     const t = useTranslate();
     
     let form: HTMLDivElement | undefined;
@@ -154,7 +154,7 @@ const Container = ({ children, loading, }: ParentProps<{ loading: Accessor<boole
                                 <p>{t("DESCRIPTION")}</p>
                             </DetailsMobile>
                             <div role="form">
-                                {children}
+                                {props.children}
                             </div>
                         </GroupMobile>
                         <GroupMobile>
@@ -178,8 +178,8 @@ const Container = ({ children, loading, }: ParentProps<{ loading: Accessor<boole
                             </div>
                             <LanguagePicker />
                         </SidePanel>
-                        <FormBase loading={loading} ref={form} role="form" >
-                            {children}
+                        <FormBase loading={state.loading()} ref={form} role="form" >
+                            {props.children}
                         </FormBase>
                     </FormContainerDesktop>
                     <Footer desktop={true} />

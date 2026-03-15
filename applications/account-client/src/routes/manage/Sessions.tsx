@@ -2,8 +2,8 @@
 import { Section } from "../ManageAccount";
 import { Box, Button, Toggle, ToggleContainer } from "@nextania/ui";
 import { decodeTime } from "ulid";
-import { createMemo, createSignal, onMount } from "solid-js";
-import { useGlobalState } from "../../context";
+import { createSignal, onMount } from "solid-js";
+import { useUserState } from "../../context";
 import { styled } from "solid-styled-components";
 import { Session } from "@nextania/core-api";
 import { useTranslate } from "../../utilities/i18n";
@@ -44,7 +44,7 @@ const SessionListContainer = styled.div`
 const Sessions = () => {
     const [ipLogging, setIpLogging] = createSignal<boolean>(false);
     const [sessions, setSessions] = createSignal<Session[]>([]);
-    const state = createMemo(() => useGlobalState());
+    const userState = useUserState();
     const t = useTranslate();
 
     const toggleIp = (e: Event) => {
@@ -52,15 +52,11 @@ const Sessions = () => {
     };
 
     const logoutAll = () => {
-        const session = state().get("session");
-        if (!session) return console.error("No session found");
-        session.logoutAll();
+        userState.session.logoutAll();
     };
 
     const revoke = (id: string) => {
-        const session = state().get("session");
-        if (!session) return console.error("No session found");
-        session.logout(id).then(() => {
+        userState.session.logout(id).then(() => {
             const newSessions = sessions().filter(s => s.id !== id);
             setSessions(newSessions);
         }).catch(() => {
@@ -69,9 +65,7 @@ const Sessions = () => {
     }
 
     onMount(async () => {
-        const session = state().get("session");
-        if (!session) return console.error("No session found");
-        const sessions = await session.getAllSessions();
+        const sessions = await userState.session.getAllSessions();
         setSessions(sessions);
     });
 
@@ -98,32 +92,32 @@ const Sessions = () => {
                 <Button onClick={logoutAll}>{t("LOGOUT_ALL")}</Button>
             </Section>
             <div>
-            <SessionListContainer>
-                <SessionList>
-                    <thead>
-                        <tr>
-                            <th>{t("ID")}</th>
-                            <th>{t("FRIENDLY_NAME")}</th>
-                            <th>{t("CREATED_AT")}</th>
-                            <th>IP address</th>
-                            <th>{t("ACTIONS")}</th>
-                        </tr>
-                    </thead>
-                    <SessionItems>
-                        {sessions().map(session => (
+                <SessionListContainer>
+                    <SessionList>
+                        <thead>
                             <tr>
-                                <td>{session.id}</td>
-                                <td>{session.friendlyName}</td>
-                                <td>{new Date(decodeTime(session.id)).toLocaleString(new Intl.Locale("zh-CN"))}</td>
-                                <td>{session.ip}</td>
-                                <td>
-                                    <Button onClick={() => revoke(session.id)}>{t("REVOKE")}</Button>
-                                </td>
+                                <th>{t("ID")}</th>
+                                <th>{t("FRIENDLY_NAME")}</th>
+                                <th>{t("CREATED_AT")}</th>
+                                <th>IP address</th>
+                                <th>{t("ACTIONS")}</th>
                             </tr>
-                        ))}
-                    </SessionItems>
-                </SessionList>
-            </SessionListContainer>
+                        </thead>
+                        <SessionItems>
+                            {sessions().map(session => (
+                                <tr>
+                                    <td>{session.id}</td>
+                                    <td>{session.friendlyName}</td>
+                                    <td>{new Date(decodeTime(session.id)).toLocaleString(new Intl.Locale("zh-CN"))}</td>
+                                    <td>{session.ip}</td>
+                                    <td>
+                                        <Button onClick={() => revoke(session.id)}>{t("REVOKE")}</Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </SessionItems>
+                    </SessionList>
+                </SessionListContainer>
             </div>
         </>
     );

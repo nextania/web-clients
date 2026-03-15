@@ -112,5 +112,16 @@
     "MFA_SETUP_BACKUP": "Save these one-time backup codes in a safe place. You can use them to log in if you lose access to your authenticator app.",
     "MFA_SETUP_NEVER_SHOWN_AGAIN": "These codes will never be shown again, so please store them securely.",
     "CREATED_AT": "Created at",
-    "REVOKE": "Revoke"
+    "REVOKE": "Revoke",
+
+    "RECOVERY_KEY_BACKUP": "Save your recovery key",
+    "RECOVERY_KEY_BACKUP_DESCRIPTION": "This key is the only way to recover your account if you forget your password. Store it somewhere safe; it will never be shown again.",
+    "RECOVERY_KEY_LABEL": "Your recovery key",
+    "RECOVERY_KEY_COPIED": "Copied!",
+    "RECOVERY_KEY_COPY": "Copy to clipboard",
+    "RECOVERY_KEY_CONFIRM": "I have saved my recovery key",
+    "RECOVERY_KEY_INPUT": "Enter your recovery key",
+    "RECOVERY_KEY_INVALID": "Invalid recovery key format",
+    "RECOVERY_KEY_NEW": "Your new recovery key",
+    "RECOVERY_KEY_NEW_DESCRIPTION": "A new recovery key has been generated. Store it somewhere safe; it will never be shown again."
 }
