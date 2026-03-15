@@ -1,5 +1,25 @@
 import Dialog from "@corvu/dialog";
-import { styled } from "solid-styled-components";
+import { keyframes, styled } from "solid-styled-components";
+
+const overlayIn = keyframes`
+    from { opacity: 0; }
+    to   { opacity: 1; }
+`;
+
+const overlayOut = keyframes`
+    from { opacity: 1; }
+    to   { opacity: 0; }
+`;
+
+const contentIn = keyframes`
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+`;
+
+const contentOut = keyframes`
+    from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    to   { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+`;
 
 export const Overlay = styled(Dialog.Overlay)`
     background-color: rgba(0, 0, 0, 0.5);
@@ -10,6 +30,12 @@ export const Overlay = styled(Dialog.Overlay)`
     left: 0;
     width: 100%;
     height: 100%;
+    &[data-open] {
+        animation: ${overlayIn} 0.2s ease;
+    }
+    &[data-closed] {
+        animation: ${overlayOut} 0.2s ease;
+    }
 `;
 
 export const Content = styled(Dialog.Content)`
@@ -32,4 +58,10 @@ export const Content = styled(Dialog.Content)`
         margin-top: 10px;
     }
     max-width: 1000px;
+    &[data-open] {
+        animation: ${contentIn} 0.2s ease;
+    }
+    &[data-closed] {
+        animation: ${contentOut} 0.2s ease;
+    }
 `;

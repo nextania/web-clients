@@ -82,6 +82,8 @@ const Account = () => {
     createEffect(() => {
         if (!dialogContext().open()) {
             setTwoFactor(userState.settings.mfaEnabled);
+        }
+        if (!dialogContext().contentPresent() && !dialogContext().open()) {
             setDialogType("NONE");
         }
     });
