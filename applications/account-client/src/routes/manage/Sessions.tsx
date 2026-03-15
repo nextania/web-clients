@@ -47,7 +47,7 @@ const Sessions = () => {
     const userState = useUserState();
     const t = useTranslate();
 
-    const toggleIp = (e: Event) => {
+    const toggleIp = (_: Event) => {
         // TODO: implement this
     };
 

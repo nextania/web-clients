@@ -1,12 +1,11 @@
 import { Select } from "@nextania/ui";
 import { useGlobalState } from "../context";
-import { Language, useTranslate } from "../utilities/i18n";
+import { Language } from "../utilities/i18n";
 
 type LanguageOption = { value: Language; label: string };
 
 const LanguagePicker = () => {
     const state = useGlobalState();
-    const t = useTranslate();
     const getOptions = () => {
         const options: LanguageOption[] = [
             { value: "en", label: "English" },

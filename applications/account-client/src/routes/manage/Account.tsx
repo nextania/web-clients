@@ -1,6 +1,6 @@
 import { Button, Input, Toggle, ToggleContainer, Box } from "@nextania/ui";
 import { Section } from "../ManageAccount";
-import { Accessor, createEffect, createMemo, createSignal, onMount, Setter, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, onMount, Show } from "solid-js";
 import { useGlobalState, useUserState } from "../../context";
 import Mfa from "../../components/dialogs/Mfa";
 import Dialog from "@corvu/dialog";

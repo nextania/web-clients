@@ -1,4 +1,4 @@
-import { RequestError, ServerError } from "@nextania/core-api";
+import { RequestError } from "@nextania/core-api";
 
 export type RenderableErrorType = 
     | "USERNAME_ALREADY_TAKEN"

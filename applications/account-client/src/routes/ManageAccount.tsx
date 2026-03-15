@@ -4,7 +4,7 @@ import Logo from "../components/Logo";
 import { RiBusinessProfileFill, RiBusinessProfileLine, RiSystemShieldKeyholeFill, RiSystemShieldKeyholeLine, RiUserFacesAccountBoxFill, RiUserFacesAccountBoxLine } from "solid-icons/ri";
 import MenuItem from "../components/MenuItem";
 import { Navigate, useNavigate, useParams } from "@solidjs/router";
-import { Accessor, Match, Setter, Switch } from "solid-js";
+import { Match, Switch } from "solid-js";
 import Account from "./manage/Account";
 import Profile from "./manage/Profile";
 import Dialog from "@corvu/dialog";
