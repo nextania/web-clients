@@ -52,7 +52,9 @@ export const createSession = async (email: string, password: string, escalate?: 
 export const createSessionPasskey = async (existingSession?: string): Promise<Client | undefined> => {
     const response = await callEndpoint("loginPasskey1", { escalate: existingSession ? true : false, stage: "BEGIN_LOGIN", token: existingSession });
     try {
-        const publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(response.message as any);
+        let publicKey = PublicKeyCredential.parseRequestOptionsFromJSON(response.message.publicKey as any);
+        if (!publicKey.extensions) publicKey.extensions = {};
+        publicKey.extensions.prf = {};
         const credential = await navigator.credentials.get({ publicKey }) as PublicKeyCredential | null;
         if (credential) {
             try {
