@@ -160,7 +160,9 @@ export class ElevatedClient extends Client {
 
     async createPasskey(): Promise<void> {
         const result = await this.callEndpoint("registerPasskey1", { escalationToken: this.escalationToken, stage: "BEGIN_REGISTER" });
-        const publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(result.message.publicKey as any);
+        let publicKey = PublicKeyCredential.parseCreationOptionsFromJSON(result.message.publicKey as any);
+        if (!publicKey.extensions) publicKey.extensions = {};
+        publicKey.extensions.prf = {};
         const credential = await navigator.credentials.create({ publicKey }) as PublicKeyCredential | null;
         if (credential) {
             const prf = credential.getClientExtensionResults().prf?.results?.first;
