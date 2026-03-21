@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nextania/ui": "workspace:*",
     "@solidjs/router": "^0.15.4",
     "solid-icons": "^1.2.0",
     "solid-js": "^1.9.11",

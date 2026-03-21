@@ -9,6 +9,7 @@ import { calculateEntropy, continueToRegisteredService } from "../utilities";
 import { finishResetPassword, forgotPassword, RequestError, ForgotContinuation, hexToBytes, bytesToHex } from "@nextania/core-api";
 import { RenderableError, RenderableErrorType } from "../errors";
 import { useGlobalState, useUserStateOptionally } from "../context";
+import { FieldContainer } from "../components/FieldContainer";
 
 type ForgotStage = "email" | "sent" | "credentials" | "recovery" | "newrecovery" | "done" | "skip";
 type InputError = "EMPTY_EMAIL" | "INVALID_EMAIL" | "EMPTY_PASSWORD" | "INVALID_CREDENTIALS" | "WEAK_PASSWORD" | "RECOVERY_KEY_INVALID";
@@ -133,7 +134,7 @@ const Forgot = () => {
             <Match when={stage() === "email"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("FORGOT")}</Title>
-                    <div>
+                    <FieldContainer>
                         <Input
                             type="email"
                             placeholder={t("EMAIL")}
@@ -143,7 +144,7 @@ const Forgot = () => {
                             onChange={v => setEmail((v.target as HTMLInputElement).value)}
                         />
                         <Button onClick={forgot} disabled={globalState.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <p>
                         <Link href="/login" onClick={login}>{t("LOGIN")}</Link>
                     </p>
@@ -155,18 +156,18 @@ const Forgot = () => {
             <Match when={stage() === "sent"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("FORGOT")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>
                             If there is an account associated with that email address, we will send you an email with a link to continue the process.
                         </label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
             <Match when={stage() === "credentials"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("FORGOT")}</Title>
-                    <div>
+                    <FieldContainer>
                         <Input
                             placeholder={t("PASSWORD")}
                             loading={globalState.loading()}
@@ -184,7 +185,7 @@ const Forgot = () => {
                             type="password"
                         />
                         <Button onClick={forgot} disabled={globalState.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <ErrorText>
                         {error() && t(error()!)}
                     </ErrorText>
@@ -193,7 +194,7 @@ const Forgot = () => {
             <Match when={stage() === "recovery"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("FORGOT")}</Title>
-                    <div>
+                    <FieldContainer>
                         <p>{t("RECOVERY_KEY_INPUT")}</p>
                         <Input
                             placeholder={t("RECOVERY_KEY_INPUT")}
@@ -203,7 +204,7 @@ const Forgot = () => {
                             onChange={v => setRecoveryKeyInput((v.target as HTMLInputElement).value)}
                         />
                         <Button onClick={forgot} disabled={globalState.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <ErrorText>
                         {error() && t(error()!)}
                     </ErrorText>
@@ -212,7 +213,7 @@ const Forgot = () => {
             <Match when={stage() === "newrecovery"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("RECOVERY_KEY_NEW")}</Title>
-                    <div>
+                    <FieldContainer>
                         <p>{t("RECOVERY_KEY_NEW_DESCRIPTION")}</p>
                         <Box type="warning">
                             <p>{t("RECOVERY_KEY_LABEL")}</p>
@@ -222,27 +223,27 @@ const Forgot = () => {
                             {copied() ? t("RECOVERY_KEY_COPIED") : t("RECOVERY_KEY_COPY")}
                         </Button>
                         <Button onClick={() => navigate("/login")} disabled={globalState.loading()}>{t("LOGIN")}</Button>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
             <Match when={stage() === "done"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("FORGOT")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>
                             Your password has been successfully reset.
                         </label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
             <Match when={stage() === "skip"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("CONTINUE")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>{t("ALREADY_LOGGED_IN")}</label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>

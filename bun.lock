@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "account-services-client",
@@ -9,13 +10,11 @@
       "version": "1.2.0",
       "dependencies": {
         "@corvu/dialog": "^0.2.4",
-        "@corvu/otp-field": "^0.1.4",
         "@corvu/popover": "^0.2.0",
         "@nextania/core-api": "workspace:*",
         "@nextania/ui": "workspace:*",
         "@solid-primitives/i18n": "^2.2.1",
         "@solidjs/router": "^0.15.4",
-        "jwt-decode": "^4.0.0",
         "solid-hcaptcha": "^1.1.0",
         "solid-icons": "^1.2.0",
         "solid-js": "^1.9.11",
@@ -33,6 +32,7 @@
       "name": "main-page",
       "version": "0.0.0",
       "dependencies": {
+        "@nextania/ui": "workspace:*",
         "@solidjs/router": "^0.15.4",
         "solid-icons": "^1.2.0",
         "solid-js": "^1.9.11",
@@ -70,6 +70,7 @@
       "name": "@nextania/ui",
       "version": "0.1.0",
       "dependencies": {
+        "@corvu/otp-field": "^0.1.4",
         "solid-js": "^1.9.11",
         "solid-styled-components": "^0.28.5",
       },
@@ -353,8 +354,6 @@
     "jsesc": ["jsesc@3.1.0", "", { "bin": { "jsesc": "bin/jsesc" } }, "sha512-/sM3dO2FOzXjKQhJuo0Q173wf2KOo8t4I8vHy6lF9poUp7bKT0/NHE8fPX23PwfhnykfqnC2xRxOnVw5XuGIaA=="],
 
     "json5": ["json5@2.2.3", "", { "bin": { "json5": "lib/cli.js" } }, "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="],
-
-    "jwt-decode": ["jwt-decode@4.0.0", "", {}, "sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA=="],
 
     "lightningcss": ["lightningcss@1.32.0", "", { "dependencies": { "detect-libc": "^2.0.3" }, "optionalDependencies": { "lightningcss-android-arm64": "1.32.0", "lightningcss-darwin-arm64": "1.32.0", "lightningcss-darwin-x64": "1.32.0", "lightningcss-freebsd-x64": "1.32.0", "lightningcss-linux-arm-gnueabihf": "1.32.0", "lightningcss-linux-arm64-gnu": "1.32.0", "lightningcss-linux-arm64-musl": "1.32.0", "lightningcss-linux-x64-gnu": "1.32.0", "lightningcss-linux-x64-musl": "1.32.0", "lightningcss-win32-arm64-msvc": "1.32.0", "lightningcss-win32-x64-msvc": "1.32.0" } }, "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ=="],
 

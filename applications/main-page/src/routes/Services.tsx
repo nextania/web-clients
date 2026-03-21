@@ -1,5 +1,5 @@
 import { styled } from "solid-styled-components";
-import Button from "../components/primitive/Button";
+import { Button } from "@nextania/ui";
 
 const ServicesBase = styled.div`
     display: flex;

@@ -10,6 +10,7 @@ import { createSession, PartialClient, createSessionPasskey, RequestError, encod
 import { useGlobalState, useUserStateOptionally } from "../context";
 import { RenderableError, RenderableErrorType } from "../errors";
 import { continueToRegisteredService, getBrowser } from "../utilities";
+import { FieldContainer } from "../components/FieldContainer";
 
 type LoginStage = "credentials" | "2fa" | "done" | "skip";
 
@@ -165,15 +166,13 @@ const Login = ({ escalate }: { escalate?: boolean; }) => {
                     <Show when={!escalate}>
                         <Title>{t("LOGIN")}</Title>
                     </Show>
-                    <div>
-                        <Button onClick={loginPasskey} disabled={state.loading()}>{t("LOGIN_WITH_PASSKEY")}</Button>
-                    </div>
+                    <Button onClick={loginPasskey} disabled={state.loading()}>{t("LOGIN_WITH_PASSKEY")}</Button>
                     <LoginOr>
                         <hr style={{ "width": "100%", "border-radius": "1px" }} />
                         <span style={{ "padding-left": "10px", "padding-right": "10px" }}>{t("OR")}</span>
                         <hr style={{ "width": "100%", "border-radius": "1px" }} />
                     </LoginOr>
-                    <div>
+                    <FieldContainer>
                         <Input
                             type="email"
                             placeholder={t("EMAIL")}
@@ -205,7 +204,7 @@ const Login = ({ escalate }: { escalate?: boolean; }) => {
                         </Show>
                         
                         <Button onClick={login} disabled={state.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <Show when={!escalate}>
                         <p>
                             {t("NO_ACCOUNT")} <Link href="/register" onClick={register}>{t("REGISTER")}</Link>
@@ -221,12 +220,12 @@ const Login = ({ escalate }: { escalate?: boolean; }) => {
             <Match when={stage() === "2fa"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("MFA")}</Title>
-                    <div>
+                    <FieldContainer>
                         {/* TODO: */}
                         <label>{t("ENTER_CODE")}</label> 
                         <OtpInput code={code} setCode={setCode} />
                         <Button onClick={login} disabled={state.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <ErrorText>
                         {error() && t(error()!)}
                     </ErrorText>
@@ -235,20 +234,20 @@ const Login = ({ escalate }: { escalate?: boolean; }) => {
             <Match when={stage() === "done"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("CONTINUE")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>
                             {t("LOGGED_IN")}
                         </label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
             <Match when={stage() === "skip"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("CONTINUE")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>{t("ALREADY_LOGGED_IN")}</label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>

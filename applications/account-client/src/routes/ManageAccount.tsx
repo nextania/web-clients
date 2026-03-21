@@ -102,6 +102,7 @@ export const Section = styled.div`
     display: flex;
     flex-direction: column;
     max-width: 400px;
+    gap: 10px;
 `;
 
 const Overlay = styled(Popover.Overlay)`

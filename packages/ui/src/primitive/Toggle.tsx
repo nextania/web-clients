@@ -6,8 +6,6 @@ const ToggleBase = styled.label`
     display: inline-block;
     width: 42px;
     height: 26px;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
     margin-right: 0.2rem;
     border: 1px solid transparent;
     

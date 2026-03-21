@@ -3,7 +3,7 @@ import Home from "./Home";
 import { createEffect, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import { styled } from "solid-styled-components";
 import Wordmark, { LogoBase, LogoContainer } from "../components/Logo";
-import Button from "../components/primitive/Button";
+import { Button } from "@nextania/ui";
 import { RiLogosGithubFill, RiSystemMenuFill } from "solid-icons/ri";
 import { BsGlobe } from "solid-icons/bs";
 import About from "./About";
@@ -174,7 +174,7 @@ const FooterHeader = styled.div`
         margin-left: 40px;
     }
     background-color: rgba(0, 0, 0, 0.6);
-    font-size: 24px;
+    font-size: 20px;
 `;
 
 const IconLink = styled.a`

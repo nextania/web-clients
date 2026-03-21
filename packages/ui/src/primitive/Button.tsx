@@ -4,7 +4,7 @@ import { styled } from "solid-styled-components";
 
 const ButtonBase = styled.button`
     border-radius: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     color: white;
     text-align: center;
     user-select: none;
@@ -21,7 +21,6 @@ const ButtonBase = styled.button`
         cursor: not-allowed;
         opacity: 0.6;
     }
-    width: 100%;
 
     transition-property: background-color, opacity, filter;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -30,11 +29,13 @@ const ButtonBase = styled.button`
 `;
 
 export const Button = (props: ParentProps<{ 
+    class?: string;
     onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>, 
     disabled?: boolean,
 }>) => {
     return (
         <ButtonBase 
+            class={props.class}
             onClick={props.onClick} 
             disabled={props.disabled} 
         >

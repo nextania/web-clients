@@ -1,5 +1,5 @@
 import { styled } from "solid-styled-components";
-import Box from "../components/primitive/Box";
+import { Box } from "@nextania/ui";
 import { useStore } from "../state";
 import { Show } from "solid-js";
 
@@ -199,6 +199,7 @@ const ComingSoonBox = styled(Box)`
     & > * + * {
         margin-left: 1rem;
     }
+    flex-direction: row;
 `;
 
 // TODO: END COMING SOON TEXT

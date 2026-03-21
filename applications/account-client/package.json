@@ -10,13 +10,11 @@
   },
   "dependencies": {
     "@corvu/dialog": "^0.2.4",
-    "@corvu/otp-field": "^0.1.4",
     "@corvu/popover": "^0.2.0",
     "@nextania/core-api": "workspace:*",
     "@nextania/ui": "workspace:*",
     "@solid-primitives/i18n": "^2.2.1",
     "@solidjs/router": "^0.15.4",
-    "jwt-decode": "^4.0.0",
     "solid-hcaptcha": "^1.1.0",
     "solid-icons": "^1.2.0",
     "solid-js": "^1.9.11",

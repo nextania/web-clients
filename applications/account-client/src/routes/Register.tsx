@@ -10,6 +10,7 @@ import { calculateEntropy, continueToRegisteredService, getBrowser } from "../ut
 import { createAccount, RegistrationContinuation, RequestError, bytesToHex, encode } from "@nextania/core-api";
 import { useGlobalState, useUserStateOptionally } from "../context";
 import { RenderableError, RenderableErrorType } from "../errors";
+import { FieldContainer } from "../components/FieldContainer";
 const ButtonContainer = styled.div`
     & > :not([hidden]) ~ :not([hidden]) {
         margin-top: 0.5rem;
@@ -170,7 +171,7 @@ const Register = () => {
             <Match when={stage() === "credentials"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("REGISTER")}</Title>
-                    <div>
+                    <FieldContainer>
                         <Input
                             type="email"
                             placeholder={t("EMAIL")}
@@ -193,7 +194,7 @@ const Register = () => {
                             />
                         </Box>
                         <Button onClick={register} disabled={state.loading()}>{t("CONTINUE")}</Button>
-                    </div>
+                    </FieldContainer>
                     <p>
                         {t("HAVE_AN_ACCOUNT")} <Link href="javascript:void(0)" onClick={login}>{t("LOGIN")}</Link>
                     </p>
@@ -205,7 +206,7 @@ const Register = () => {
             <Match when={stage() === "verify"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("VERIFICATION")}</Title>
-                    <div>
+                    <FieldContainer>
                         <Show when={continuation()?.emailEnabled}>
                             {/* <label>{translate(lang(), "EMAIL_SENT")}</label> */}
                             <OtpInput code={code} setCode={setCode} />
@@ -236,7 +237,7 @@ const Register = () => {
                             <Button onClick={back} disabled={state.loading()}>{t("BACK")}</Button>
                             <Button onClick={register} disabled={state.loading()}>{t("CONTINUE")}</Button>
                         </ButtonContainer>
-                    </div>
+                    </FieldContainer>
                     <ErrorText>
                     {error() && t(error()!)}
                     </ErrorText>
@@ -245,7 +246,7 @@ const Register = () => {
             <Match when={stage() === "recovery"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("RECOVERY_KEY_BACKUP")}</Title>
-                    <div>
+                    <FieldContainer>
                         <p>{t("RECOVERY_KEY_BACKUP_DESCRIPTION")}</p>
                         <Box type="warning">
                             <p>{t("RECOVERY_KEY_LABEL")}</p>
@@ -255,16 +256,16 @@ const Register = () => {
                             {copied() ? t("RECOVERY_KEY_COPIED") : t("RECOVERY_KEY_COPY")}
                         </Button>
                         <Button onClick={confirmRecovery} disabled={state.loading()}>{t("RECOVERY_KEY_CONFIRM")}</Button>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
             <Match when={stage() === "done"}>
                 <Fade hiding={hiding()}>
                     <Title>{t("CONTINUE")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>{t("LOGGED_IN")}</label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>
@@ -272,9 +273,9 @@ const Register = () => {
                 
                 <Fade hiding={hiding()}>
                     <Title>{t("CONTINUE")}</Title>
-                    <div>
+                    <FieldContainer>
                         <label>{t("ALREADY_LOGGED_IN")}</label>
-                    </div>
+                    </FieldContainer>
                     <ErrorText />
                 </Fade>
             </Match>

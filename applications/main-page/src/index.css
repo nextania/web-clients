@@ -27,7 +27,6 @@ html, body {
   padding: 0px;
   margin: 0px;
 
-  /* Cohesive color system */
   --primary: #00dc9a;
   --primary-light: #2dfbb5;
   --primary-dark: #00a876;
@@ -42,11 +41,26 @@ html, body {
   --accent-1: #00b8ff;
   --accent-2: #ff3d9a;
   --accent-3: #ffb800;
-  
-  --success: #00dc9a;
-  --warning: #ffb800;
-  --error: #ff3d5f;
-  --info: #00b8ff;
+
+  /* Box */
+  --box-success-bg: rgba(0, 220, 154, 0.15);
+  --box-success-border: #00dc9a;
+  --box-success-text: #2dfbb5;
+
+  --box-info-bg: rgba(0, 184, 255, 0.15);
+  --box-info-border: #00b8ff;
+  --box-info-text: #5dc9ff;
+
+  --box-error-bg: rgba(255, 61, 95, 0.15);
+  --box-error-border: #ff3d5f;
+  --box-error-text: #ff6b8a;
+
+  --box-warning-bg: rgba(255, 184, 0, 0.15);
+  --box-warning-border: #ffb800;
+  --box-warning-text: #ffd666;
+
+  /* Button */
+  --secondary-button: var(--secondary);
   
   --foreground: hsl(240 3.7% 15.9%);
   --foreground-border: #404040;

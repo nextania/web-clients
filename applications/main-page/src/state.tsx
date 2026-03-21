@@ -60,7 +60,7 @@ export const StateProvider = (props: ParentProps) => {
 export const saveUser = async (token: string) => {
     const response = await Promise.race([new Promise(r => setTimeout(r, 5000)), fetch("https://account.nextania.com/api/user", {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
         },
     })]).catch(() => null);
     if (response instanceof Response && response.ok) {

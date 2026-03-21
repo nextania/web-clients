@@ -2,9 +2,7 @@ import { createSignal, JSX } from "solid-js";
 import { styled } from "solid-styled-components";
 
 const InputContainer = styled.div`
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    position:relative;
+    position: relative;
 `;
 
 const InputBase = styled.input`
@@ -12,12 +10,11 @@ const InputBase = styled.input`
     padding: 0.5rem;
     border-radius: 0.375rem;
     background-color: transparent;
-    margin-bottom: 0.5rem;
-    border: 2px solid var(--foreground-border);
+    border: 1px solid var(--foreground-border);
     box-sizing: border-box;
     
     &:focus {
-        border: 2px solid var(--secondary);
+        border: 1px solid var(--secondary);
         outline: none;
     }
     
