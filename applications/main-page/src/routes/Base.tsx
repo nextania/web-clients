@@ -1,14 +1,10 @@
-import { A, useNavigate, useParams } from "@solidjs/router";
-import Home from "./Home";
-import { createEffect, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { A, useNavigate } from "@solidjs/router";
+import { createEffect, onCleanup, onMount, ParentProps, Show } from "solid-js";
 import { styled } from "solid-styled-components";
 import Wordmark, { LogoBase, LogoContainer } from "../components/Logo";
 import { Button } from "@nextania/ui";
 import { RiLogosGithubFill, RiSystemMenuFill } from "solid-icons/ri";
 import { BsGlobe } from "solid-icons/bs";
-import About from "./About";
-import Resources from "./Resources";
-import Services from "./Services";
 import { saveUser, useStore } from "../state";
 
 const Header = styled.div`
@@ -47,10 +43,11 @@ const HeaderRouteList = styled.div`
     }
 `;
 
-const HeaderRoute = styled.div`
+const HeaderRoute = styled(A)`
     cursor: default;
     user-select: none;
     padding-top: 10px;
+    padding-bottom: 8px;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 5px;
@@ -58,27 +55,34 @@ const HeaderRoute = styled.div`
     &:hover {
         background-color: rgba(255, 255, 255, 0.1);
     }
-    ${(props: { active?: boolean }) => props.active ? `
-        &::after {
-            content: "";
-            display: block;
-            width: 75%;
-            margin-left: 12.5%;
-            height: 3px;
-            background-color: var(--secondary);
-            border-radius: 5px;
-            margin-top: 5px;
-            transition: width 0.3s, margin-left 0.3s;
-        }
-        &:hover::after {
-            width: 100%;
-            margin-left: 0;
-        }
-    ` : ""}
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background-color: var(--secondary);
+        border-radius: 5px;
+        transition: width 0.1s, left 0.1s;
+    }
+    &.active::after {
+        left: 25%;
+        width: 50%;
+        transition: width 0.3s, left 0.3s;
+    }
+    &.active:hover::after {
+        width: 75%;
+        left: 12.5%;
+    }
+    color: white;
+    text-decoration: none;
 `;
 
 const DropdownContainer = styled.div`
     position: relative;
+    display: flex;
+    align-items: center;
     
     &:hover > div {
         opacity: 1;
@@ -234,8 +238,7 @@ const MobileMenuIcon = styled.div`
 import logo from "/logo.svg";
 import ResponsiveMenu from "../components/ResponsiveMenu";
 
-const Base = () => {
-    const params = useParams();
+const Base = (props: ParentProps) => {
     const n = useNavigate();
     const store = useStore();
 
@@ -288,11 +291,11 @@ const Base = () => {
                     </>
                 }>
                     <HeaderRouteList>
-                        <HeaderRoute active={!params.page} onClick={() => n("/")}>Home</HeaderRoute>
-                        <HeaderRoute active={params.page === "about"} onClick={() => n("/about")}>About us</HeaderRoute>
-                        <HeaderRoute active={params.page === "services"} onClick={() => n("/services")}>Services</HeaderRoute>
+                        <HeaderRoute activeClass="active" end href="/">Home</HeaderRoute>
+                        <HeaderRoute activeClass="active" href="/about">About us</HeaderRoute>
+                        <HeaderRoute activeClass="active" href="/services">Services</HeaderRoute>
                         <DropdownContainer>
-                            <HeaderRoute active={params.page === "resources"} onClick={() => n("/resources")}>Resources</HeaderRoute>
+                            <HeaderRoute activeClass="active" href="/resources">Resources</HeaderRoute>
                             <DropdownMenu>
                                 <DropdownItem onClick={() => n("/resources")}>Overview</DropdownItem>
                                 <DropdownItem onClick={() => n("/resources/blog")}>Blog</DropdownItem>
@@ -313,25 +316,7 @@ const Base = () => {
                 </Show>
             </Header>
             <Content>
-                <Switch fallback={
-                    <div>
-                        <h1>404</h1>
-                        <button onClick={() => n("/")}>Go Home</button>
-                    </div>
-                }>
-                    <Match when={!params.page}>
-                        <Home />
-                    </Match>
-                    <Match when={params.page === "about"}>
-                        <About />
-                    </Match>
-                    <Match when={params.page === "services"}>
-                        <Services />
-                    </Match>
-                    <Match when={params.page === "resources"}>
-                        <Resources />
-                    </Match>
-                </Switch>
+                {props.children}
             </Content>
             <Footer>
                 <FooterHeader>

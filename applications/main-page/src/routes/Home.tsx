@@ -157,7 +157,6 @@ const HeroButton = styled.button`
 `;
 
 const HeroButtonPrimary = styled(HeroButton)`
-    /* background: linear-gradient(120deg, var(--secondary), #27004b, #390039); */
     background: linear-gradient(120deg, var(--secondary), #7100db, #a500a5, #c26c1c);
     background-size: 200% 100%;     
     color: white;
