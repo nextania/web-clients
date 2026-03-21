@@ -272,6 +272,10 @@ const Base = (props: ParentProps) => {
         }
     });
 
+    const register = () => {
+        location.href = "https://account.nextania.com/register?continue=" + encodeURIComponent("https://nextania.com/authenticate");
+    };
+
     return (
         <>
             <Header>
@@ -314,7 +318,7 @@ const Base = (props: ParentProps) => {
             <Footer>
                 <FooterHeader>
                     <h2>Try Nextania for free today</h2>
-                    <Button>Get started</Button>
+                    <Button onClick={register}>Get started</Button>
                 </FooterHeader>
                 <FooterBody>
                     <FooterBodyMain>
