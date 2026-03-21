@@ -53,7 +53,7 @@ const ResponsiveMenu = () => {
     const n = useNavigate();
     const store = useStore();
 
-    const close = () => store.set("responsiveMenuOpen", false);
+    const close = () => store.setResponsiveMenuOpen(false);
 
     const nx = (path: string) => {
         n(path);
@@ -70,7 +70,7 @@ const ResponsiveMenu = () => {
     };
 
     return (
-        <Show when={store.get("responsiveMenuOpen")}>
+        <Show when={store.responsiveMenuOpen()}>
             <MenuContainer>
                 <TopBar>
                     <LogoContainer onClick={() => n("/")}> <LogoBase src={logo} /> <Wordmark /></LogoContainer>
@@ -83,7 +83,7 @@ const ResponsiveMenu = () => {
                     <MenuItem onClick={() => nx("/about")}>About us</MenuItem>
                     <MenuItem onClick={() => nx("/services")}>Services</MenuItem>
                     <MenuItem onClick={() => nx("/resources")}>Resources</MenuItem>
-                    <Show when={store.get("user")} fallback={
+                    <Show when={!!store.user()} fallback={
                         <MenuItem onClick={login}>Login</MenuItem>
                     }>
                         <MenuItem onClick={account}>Account</MenuItem>

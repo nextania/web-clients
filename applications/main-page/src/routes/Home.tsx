@@ -236,7 +236,7 @@ const Home = () => {
     };
     return (
         <HomeBase>
-            <Show when={!store.get("mobile")} fallback={ 
+            <Show when={!store.mobile()} fallback={ 
                 <>
                     <SmallBigText>Open source solutions for the future</SmallBigText>
                     <SmallDescription>
@@ -273,7 +273,7 @@ const Home = () => {
                 <span>Radiance gateway showing hosts page</span>
             </HeroImage>
 
-            <Show when={!store.get("mobile")} fallback={
+            <Show when={!store.mobile()} fallback={
                 <>
                     <MobileSection>
                         <Gradient1>

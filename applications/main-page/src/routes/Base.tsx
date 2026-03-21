@@ -1,11 +1,11 @@
 import { A, useNavigate } from "@solidjs/router";
-import { createEffect, onCleanup, onMount, ParentProps, Show } from "solid-js";
+import { createEffect, onMount, ParentProps, Show } from "solid-js";
 import { styled } from "solid-styled-components";
 import Wordmark, { LogoBase, LogoContainer } from "../components/Logo";
 import { Button } from "@nextania/ui";
 import { RiLogosGithubFill, RiSystemMenuFill } from "solid-icons/ri";
 import { BsGlobe } from "solid-icons/bs";
-import { saveUser, useStore } from "../state";
+import { getUser, useStore } from "../state";
 
 const Header = styled.div`
     position: sticky;
@@ -245,8 +245,9 @@ const Base = (props: ParentProps) => {
     onMount(async () => {
         const token = localStorage.getItem("token");
         if (token) {
-            const result = (await saveUser(token).catch(() => {})) ?? false;
-            if (!result) localStorage.removeItem("token");
+            const user = await getUser(token);
+            if (!user) localStorage.removeItem("token");
+            store.setUser(user);
         }
     });
 
@@ -259,20 +260,12 @@ const Base = (props: ParentProps) => {
         location.href = "https://account.nextania.com/manage";
     };
 
-    onMount(() => {
-        if (window.innerWidth < 768) store.set("mobile", true);
-        const listener = () => {
-            if (window.innerWidth < 768) store.set("mobile", true);
-            else store.set("mobile", false);
-        };
-        window.addEventListener("resize", listener);
-        onCleanup(() => window.removeEventListener("resize", listener));
-    });
 
-    const toggleMenu = () => store.set("responsiveMenuOpen", !store.get("responsiveMenuOpen"));
+
+    const toggleMenu = () => store.setResponsiveMenuOpen(!store.responsiveMenuOpen());
 
     createEffect(() => {
-        if (store.get("responsiveMenuOpen")) {
+        if (store.responsiveMenuOpen()) {
             document.body.style.setProperty("position", "fixed");
         } else {
             document.body.style.setProperty("position", "");
@@ -283,7 +276,7 @@ const Base = (props: ParentProps) => {
         <>
             <Header>
                 <LogoContainer onClick={() => n("/")}> <LogoBase src={logo} /> <Wordmark /></LogoContainer>
-                <Show when={!store.get("mobile")} fallback={
+                <Show when={!store.mobile()} fallback={
                     <>
                         <MobileMenuIcon onClick={toggleMenu}>
                             <RiSystemMenuFill />
@@ -307,7 +300,7 @@ const Base = (props: ParentProps) => {
                         </DropdownContainer>
                     </HeaderRouteList>
                     <AccountContainer>
-                        <Show when={store.get("user") !== undefined} fallback={
+                        <Show when={!!store.user()} fallback={
                             <Button onClick={login}>Log in</Button>
                         }>
                             <Button onClick={account}>Account</Button>
@@ -330,7 +323,7 @@ const Base = (props: ParentProps) => {
                         <IconLink href="https://github.com/nextania"><RiLogosGithubFill /></IconLink>
                         <Monero>Monero:  <span title="Due to technical limitations, we are unable to accept form of payment at this time.">4ALqMFtBLV5KHoH6JjPZeuX9WnFKp5kZ49tythEMhFqAbJciqX9Qy5y796kREaU5nLfM1py6Gjt5C9YT1paBNDk8VNzhzRr</span></Monero>
                     </FooterBodyMain>
-                    <FooterBodyLinks mobile={store.get("mobile") ?? false}>
+                    <FooterBodyLinks mobile={store.mobile()}>
                         <FooterBodySection>
                             <h2>Links</h2>
                             <p><Link href="/">Home</Link></p>

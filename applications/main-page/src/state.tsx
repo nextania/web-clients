@@ -1,4 +1,4 @@
-import { createSignal, ParentProps, Setter, useContext } from "solid-js";
+import { createSignal, onCleanup, onMount, ParentProps, Setter, useContext } from "solid-js";
 import { Accessor, createContext } from "solid-js";
 
 interface User {
@@ -8,37 +8,16 @@ interface User {
 
 type Language = "en" | "fr";
 
-interface StateKeys {
-    user: User;
-    language: Language;
-    mobile: boolean;
-    responsiveMenuOpen: boolean;
+interface Store {
+    user: Accessor<User | undefined>;
+    setUser: Setter<User | undefined>;
+    language: Accessor<Language>;
+    setLanguage: Setter<Language>;
+    mobile: Accessor<boolean>;
+    responsiveMenuOpen: Accessor<boolean>;
+    setResponsiveMenuOpen: Setter<boolean>;
 }
 
-class Store {
-    private data: Record<keyof StateKeys, StateKeys[keyof StateKeys]> = {} as Record<keyof StateKeys, StateKeys[keyof StateKeys]>;
-    private random: Accessor<number>;
-    private setRandom: Setter<number>;
-
-    constructor() {
-        const [random, setRandom] = createSignal(Math.random());
-        this.random = random;
-        this.setRandom = setRandom;
-    }
-
-    public get<K extends keyof StateKeys>(key: K): StateKeys[K] | undefined {
-        this.random();
-        return this.data[key] as StateKeys[K];
-    }
-
-    public set<K extends keyof StateKeys>(key: K, value: StateKeys[K]): void {
-        this.data[key] = value;
-        this.setRandom(Math.random());
-    }
-
-
-}
-const store = new Store();
 const StateContext = createContext<Store>();
 
 export const useStore = () => {
@@ -50,23 +29,33 @@ export const useStore = () => {
 }
 
 export const StateProvider = (props: ParentProps) => {
+    const [language, setLanguage] = createSignal<Language>("en");
+    const [mobile, setMobile] = createSignal(false);
+    const [responsiveMenuOpen, setResponsiveMenuOpen] = createSignal(false);
+    const [user, setUser] = createSignal<User>();
+    onMount(() => {
+        if (window.innerWidth < 768) setMobile(true);
+        const listener = () => {
+            if (window.innerWidth < 768) setMobile(true);
+            else setMobile(false);
+        };
+        window.addEventListener("resize", listener);
+        onCleanup(() => window.removeEventListener("resize", listener));
+    });
     return (
-        <StateContext.Provider value={store}>
+        <StateContext.Provider value={{ language, setLanguage, mobile, responsiveMenuOpen, setResponsiveMenuOpen, user, setUser }}>
             {props.children}
         </StateContext.Provider>
     );
 };
 
-export const saveUser = async (token: string) => {
+export const getUser = async (token: string) => {
     const response = await Promise.race([new Promise(r => setTimeout(r, 5000)), fetch("https://account.nextania.com/api/user", {
         headers: {
             Authorization: token,
         },
     })]).catch(() => null);
     if (response instanceof Response && response.ok) {
-        const json = await response.json();
-        store.set("user", json);
-        return true;
+        return await response.json() as User;
     }
-    return false;
-}
+};
