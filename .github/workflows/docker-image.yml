@@ -15,13 +15,20 @@ jobs:
     - name: Log in to container registry
       uses: docker/login-action@v4
       with:
-        registry: quay.nextania.com
-        username: ${{ secrets.QUAY_USERNAME }}
-        password: ${{ secrets.QUAY_ROBOT_TOKEN }}
+        registry: cr.nextania.com
+        username: ${{ secrets.CR_USERNAME }}
+        password: ${{ secrets.CR_ROBOT_TOKEN }}
     - name: Build and push account-client
       uses: docker/build-push-action@v7
       with:
         context: .
         file: applications/account-client/Dockerfile
         push: true
-        tags: quay.nextania.com/nextania/account-client:git, quay.nextania.com/nextania/account-client:${{ github.sha }}
+        tags: cr.nextania.com/nextania/account-client:git, cr.nextania.com/nextania/account-client:${{ github.sha }}
+    - name: Build and push main-page
+      uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: applications/main-page/Dockerfile
+        push: true
+        tags: cr.nextania.com/nextania/main-page:git, cr.nextania.com/nextania/main-page:${{ github.sha }}
